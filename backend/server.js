@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const apiRoutes = require('./routes');
+const sessionService = require('./services/sessionService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ app.use((err, req, res, next) => {
 });
 
 if (require.main === module) {
+  sessionService.startExpiryCheck();
   app.listen(PORT, () => {
     console.log(`8bitIQ running at http://localhost:${PORT}`);
   });
