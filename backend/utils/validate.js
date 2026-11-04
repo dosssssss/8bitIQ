@@ -43,4 +43,17 @@ function requiredBoolean(value, name) {
   return value;
 }
 
-module.exports = { body, requiredString, optionalString, requiredBoolean };
+// For query strings like ?limit=10. Returns the default when it's missing.
+function optionalInt(value, name, { min, max, defaultValue }) {
+  if (value === undefined || value === '') return defaultValue;
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) {
+    throw badRequest(`${name} must be a whole number`);
+  }
+  const number = Number(value);
+  if (number < min || number > max) {
+    throw badRequest(`${name} must be between ${min} and ${max}`);
+  }
+  return number;
+}
+
+module.exports = { body, requiredString, optionalString, requiredBoolean, optionalInt };
