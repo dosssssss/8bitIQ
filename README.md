@@ -22,7 +22,7 @@ npm install
 npm start
 ```
 
-Then open http://localhost:3000. Set `PORT` to use another port. `npm run dev` restarts the server when files change.
+Then open http://localhost:3000. Set `PORT` to use another port. `npm run dev` restarts the server when files change. `npm test` runs the tests in `tests/`.
 
 ## Folder structure
 ```
