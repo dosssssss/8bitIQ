@@ -15,5 +15,25 @@ A web-based puzzle game: log in, start a timed run, play random mini-games, and 
 - When it's approved and merged, move your card into your own Done column.
 
 ## Getting started
+Requires Node.js 18 or newer.
 
-Setup instructions will be added with the `[8B-10]` setup tasks.
+```
+npm install
+npm start
+```
+
+Then open http://localhost:3000. Set `PORT` to use another port. `npm run dev` restarts the server when files change.
+
+## Folder structure
+```
+backend/
+  server.js       Express app, serves public/ and mounts /api
+  routes/         API routes (index.js mounts the rest)
+  controllers/    Request handlers
+  services/       Game sessions, scoring, database access
+  games/          Mini-game logic and answer checking
+public/
+  index.html      Home / login
+  game.html       Game screen
+  css/  js/
+```
