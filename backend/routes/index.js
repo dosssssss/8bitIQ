@@ -8,9 +8,9 @@ router.get('/health', (req, res) => {
 });
 
 router.use('/game', require('./game')); // POST /api/game/start, /result, /end
+router.use('/leaderboard', require('./leaderboard')); // GET /api/leaderboard
 
 // More feature routes get mounted here as each Trello card lands, for example:
 // router.use('/', require('./auth'));         // POST /api/register, /api/login
-// router.use('/leaderboard', require('./leaderboard'));
 
 module.exports = router;
