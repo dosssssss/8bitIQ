@@ -80,7 +80,7 @@ test('results after the game is over are rejected', async () => {
     sessionService.getSession(sessionId).endsAt = Date.now() - 1;
     const res = await post(base, '/api/game/result', { sessionId, success: true });
     assert.strictEqual(res.status, 409);
-    assert.deepStrictEqual(await res.json(), { success: false, message: 'Game is over' });
+    assert.deepStrictEqual(await res.json(), { success: false, message: 'Game is over', gameOver: true });
   });
 });
 
