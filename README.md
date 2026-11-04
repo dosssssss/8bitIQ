@@ -32,6 +32,8 @@ backend/
   controllers/    Request handlers
   services/       Game sessions, scoring, database access
   games/          Mini-game logic and answer checking
+  middleware/     Error handling (every error is { success: false, message })
+  utils/          Shared helpers: ApiError and request validation
 public/
   index.html      Home / login
   game.html       Game screen
