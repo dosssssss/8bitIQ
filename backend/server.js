@@ -6,9 +6,11 @@ const { apiNotFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
 app.use(express.json());
+app.use(express.static(FRONTEND_DIR));
 app.use(express.static(PUBLIC_DIR));
 
 app.use('/api', apiRoutes);
