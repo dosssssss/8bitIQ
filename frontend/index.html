@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>8bitIQ - Settings</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Main Mobile Handheld Frame -->
+  <main class="app-container">
+    <div class="scanlines"></div>
+
+    <div class="main-viewport">
+
+      <!-- =======================================================
+           VIEW 1: Settings - All Options (Image 1, Left)
+           ======================================================= -->
+      <section id="view-settings-all" class="view-panel active">
+        <header class="screen-header">
+          <div class="header-left">
+            <div class="title-group">
+              <h1 class="screen-title">Settings</h1>
+              <p class="screen-subtitle">Customize your 8bitIQ experience</p>
+            </div>
+          </div>
+          <div class="btn-help-square" aria-hidden="true">?</div>
+        </header>
+        <div class="header-divider"></div>
+
+        <nav class="settings-menu" aria-label="Settings Options">
+          <div class="menu-item-row" data-nav="view-settings-audio" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Audio</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-gameplay" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Gameplay</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-notifications" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Notifications</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-privacy" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Privacy &amp; secrity</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-about" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">About</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-language" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Language</span>
+          </div>
+          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Account Center</span>
+          </div>
+          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Leaderboards</span>
+          </div>
+        </nav>
+      </section>
+
+      <!-- =======================================================
+           VIEW 2: Settings - Audio (Image 1, Middle)
+           ======================================================= -->
+      <section id="view-settings-audio" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <div class="title-group">
+              <h1 class="screen-title">Settings</h1>
+              <p class="screen-subtitle">Customize your 8bitIQ experience</p>
+            </div>
+          </div>
+          <div class="btn-help-square" aria-hidden="true">?</div>
+        </header>
+        <div class="header-divider"></div>
+
+        <nav class="settings-menu">
+          <!-- Expanded Audio Accordion Header -->
+          <div class="menu-item-row" data-nav="view-settings-all" role="button" tabindex="0">
+            <span class="menu-arrow">&lt;</span>
+            <span class="menu-label">Audio</span>
+          </div>
+
+          <!-- Audio Options Cyan Card -->
+          <div class="cyan-card">
+            <div class="slider-control-group">
+              <!-- Music Volume Slider -->
+              <div class="slider-row">
+                <span class="control-label">MUSIC</span>
+                <div class="slider-track-wrap">
+                  <input type="range" min="0" max="100" value="85" class="pixel-range-input" id="slider-music" aria-label="Music volume">
+                </div>
+              </div>
+              <!-- Sound FX Volume Slider -->
+              <div class="slider-row">
+                <span class="control-label">SOUND FX</span>
+                <div class="slider-track-wrap">
+                  <input type="range" min="0" max="100" value="90" class="pixel-range-input" id="slider-sfx" aria-label="Sound FX volume">
+                </div>
+              </div>
+            </div>
+
+            <div class="card-dashed-divider"></div>
+
+            <!-- Vibration Toggle -->
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-title">VIBRATION</span>
+                <span class="toggle-subtext">Buzz when you answer</span>
+              </div>
+              <label class="pixel-switch" aria-label="Toggle vibration">
+                <input type="checkbox" id="toggle-vibration" checked>
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Remaining options underneath Audio Card -->
+          <div class="menu-item-row" data-nav="view-settings-gameplay" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Gameplay</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-notifications" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Notifications</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-privacy" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Privacy &amp; secrity</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-about" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">About</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-language" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Language</span>
+          </div>
+          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Account Center</span>
+          </div>
+          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Leaderboards</span>
+          </div>
+        </nav>
+      </section>
+
+      <!-- =======================================================
+           VIEW 3: Settings - Gameplay (Image 1, Right)
+           ======================================================= -->
+      <section id="view-settings-gameplay" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <div class="title-group">
+              <h1 class="screen-title">Settings</h1>
+              <p class="screen-subtitle">Customize your 8bitIQ experience</p>
+            </div>
+          </div>
+          <div class="btn-help-square" aria-hidden="true">?</div>
+        </header>
+        <div class="header-divider"></div>
+
+        <nav class="settings-menu">
+          <div class="menu-item-row" data-nav="view-settings-audio" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Audio</span>
+          </div>
+
+          <!-- Expanded Gameplay Accordion Header -->
+          <div class="menu-item-row" data-nav="view-settings-all" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Gameplay</span>
+          </div>
+
+          <!-- Gameplay Cyan Card -->
+          <div class="cyan-card">
+            <!-- Difficulty 3-button control -->
+            <div class="segmented-group">
+              <span class="control-label">DIFFICULTY</span>
+              <div class="segmented-pill-container" id="difficulty-group">
+                <button class="segmented-btn" data-diff="EASY">EASY</button>
+                <button class="segmented-btn active" data-diff="NORMAL">NORMAL</button>
+                <button class="segmented-btn" data-diff="HARD">HARD</button>
+              </div>
+            </div>
+
+            <div class="card-dashed-divider"></div>
+
+            <!-- Question Timer Toggle -->
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-title">QUESTION TIMER</span>
+                <span class="toggle-subtext">Buzz when you answer</span>
+              </div>
+              <label class="pixel-switch" aria-label="Toggle Question Timer">
+                <input type="checkbox" id="toggle-question-timer" checked>
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <!-- Show Hints Toggle -->
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-title">SHOW HINTS</span>
+                <span class="toggle-subtext">cost 10 points per hint</span>
+              </div>
+              <label class="pixel-switch" aria-label="Toggle Hints">
+                <input type="checkbox" id="toggle-hints">
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <!-- Auto-Next Questions Toggle -->
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-title">AUTO-NEXT QUESTIONS</span>
+              </div>
+              <label class="pixel-switch" aria-label="Toggle Auto Next Questions">
+                <input type="checkbox" id="toggle-auto-next" checked>
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Options underneath Gameplay Card -->
+          <div class="menu-item-row" data-nav="view-settings-notifications" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Notifications</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-privacy" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Privacy &amp; secrity</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-about" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">About</span>
+          </div>
+          <div class="menu-item-row" data-nav="view-settings-language" role="button" tabindex="0">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Language</span>
+          </div>
+          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Account Center</span>
+          </div>
+          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+            <span class="menu-arrow">&gt;</span>
+            <span class="menu-label">Leaderboards</span>
+          </div>
+        </nav>
+      </section>
+
+      <!-- =======================================================
+           VIEW 4: Settings - Notifications (Image 2, Left)
+           ======================================================= -->
+      <section id="view-settings-notifications" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <button class="btn-back-square btn-back" title="Back" aria-label="Go back">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="title-group">
+              <h1 class="screen-title">Notifications</h1>
+              <p class="screen-subtitle">Customize your 8bitIQ experience</p>
+            </div>
+          </div>
+        </header>
+        <div class="header-divider"></div>
+
+        <h2 class="section-tag">Alerts</h2>
+        <div class="cyan-card">
+          <!-- Push Notifications -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">PUSH NOTIFICATIONS</span>
+            </div>
+            <label class="pixel-switch" aria-label="Toggle Push Notifications">
+              <input type="checkbox" id="toggle-push-notif" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="card-dashed-divider"></div>
+
+          <!-- News & Announcements -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">NEWS &amp; ANNOUNCEMENTS</span>
+              <span class="toggle-subtext">Reminder at 12:00 AM</span>
+            </div>
+            <label class="pixel-switch" aria-label="Toggle News Announcements">
+              <input type="checkbox" id="toggle-news" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="card-dashed-divider"></div>
+
+          <!-- Rank Warning -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">RANK WARNING</span>
+              <span class="toggle-subtext">Notify when someone passes you</span>
+            </div>
+            <label class="pixel-switch" aria-label="Toggle Rank Warning">
+              <input type="checkbox" id="toggle-rank">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="card-dashed-divider"></div>
+
+          <!-- Do Not Disturb -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">DO NOT DISTURB</span>
+              <div class="time-selector-row">
+                <span class="time-pill" id="dnd-time-text">10:00 PM TO 9:00 AM</span>
+                <button class="time-add-btn" id="btn-edit-dnd" title="Adjust DND Time" aria-label="Adjust DND Time">+</button>
+              </div>
+            </div>
+            <label class="pixel-switch" aria-label="Toggle Do Not Disturb">
+              <input type="checkbox" id="toggle-dnd">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           VIEW 5: Settings - Privacy & Security (Image 2, Middle)
+           ======================================================= -->
+      <section id="view-settings-privacy" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <button class="btn-back-square btn-back" title="Back" aria-label="Go back">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="title-group">
+              <h1 class="screen-title">Privacy &amp; Security</h1>
+              <p class="screen-subtitle">Customize your 8bitIQ experience</p>
+            </div>
+          </div>
+        </header>
+        <div class="header-divider"></div>
+
+        <!-- Security Section -->
+        <h2 class="section-tag">Security</h2>
+        <div class="cyan-card">
+          <div class="action-item-row" id="btn-change-password" role="button" tabindex="0">
+            <span class="action-label">CHANGE PASSWORD</span>
+            <span class="action-arrow">&gt;</span>
+          </div>
+
+          <div class="card-dashed-divider"></div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">TWO-FACTOR LOGIN</span>
+            </div>
+            <label class="pixel-switch" aria-label="Toggle Two Factor Login">
+              <input type="checkbox" id="toggle-2fa" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Profile Visibility Section -->
+        <h2 class="section-tag">PROFILE VISIBILITY</h2>
+        <div class="cyan-card">
+          <div class="segmented-pill-container" id="visibility-group" style="width: 100%; margin-bottom: 12px;">
+            <button class="segmented-btn" style="flex: 1;" data-vis="PRIVATE">PRIVATE</button>
+            <button class="segmented-btn active" style="flex: 1;" data-vis="PUBLIC">PUBLIC</button>
+            <button class="segmented-btn" style="flex: 1;" data-vis="FRIENDS">FRIENDS</button>
+          </div>
+
+          <div class="card-dashed-divider"></div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">SHOW ME ON LEADERBOARDS</span>
+            </div>
+            <label class="pixel-switch" aria-label="Toggle show on leaderboards">
+              <input type="checkbox" id="toggle-show-leaderboard" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Data Section -->
+        <h2 class="section-tag">DATA</h2>
+        <div class="pink-card" id="btn-delete-account" role="button" tabindex="0">
+          <div class="action-item-row">
+            <span class="action-label">DELETE MY ACCOUNT</span>
+            <span class="action-arrow">&gt;</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           VIEW 6: Settings - About (Image 2, Right)
+           ======================================================= -->
+      <section id="view-settings-about" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <button class="btn-back-square btn-back" title="Back" aria-label="Go back">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="title-group">
+              <h1 class="screen-title">About</h1>
+              <p class="screen-subtitle">Customize your 8bitIQ experience</p>
+            </div>
+          </div>
+        </header>
+        <div class="header-divider"></div>
+
+        <!-- 8itIQ Information Table -->
+        <h2 class="section-tag">8itIQ</h2>
+        <div class="cyan-card table-card">
+          <div class="table-row">
+            <span class="table-col-label">Name</span>
+            <span class="table-col-val" id="player-name-val">PlayerOne</span>
+          </div>
+          <div class="table-row">
+            <span class="table-col-label">Version</span>
+            <span class="table-col-val">19.0.2.0</span>
+          </div>
+          <div class="table-row">
+            <span class="table-col-label">Date registration</span>
+            <span class="table-col-val">01/06/2026</span>
+          </div>
+        </div>
+
+        <!-- Overview Section -->
+        <h2 class="section-tag">Overview</h2>
+        <div class="cyan-card">
+          <div class="action-item-row static-row">
+            <span class="action-label">How to Play</span>
+            <span class="action-arrow">&gt;</span>
+          </div>
+
+          <div class="card-dashed-divider"></div>
+
+          <div class="action-item-row static-row">
+            <span class="action-label">FAQs</span>
+            <span class="action-arrow">&gt;</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =======================================================
+           VIEW 7: Settings - Language (Image 3)
+           ======================================================= -->
+      <section id="view-settings-language" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <button class="btn-back-square btn-back" title="Back" aria-label="Go back">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="title-group">
+              <h1 class="screen-title">Language</h1>
+              <p class="screen-subtitle">Customize your 8bitIQ experience</p>
+            </div>
+          </div>
+        </header>
+        <div class="header-divider"></div>
+
+        <!-- Language Dropdown Selector Card -->
+        <div class="lang-selector-box">
+          <div class="lang-header-row" id="lang-toggle-header">
+            <span class="lang-header-title" id="selected-lang-label">Select your language</span>
+            <span class="lang-header-chevron">&#9660;</span>
+          </div>
+
+          <div class="lang-list-container" id="lang-options-list">
+            <div class="lang-option-row" data-lang="Philippines">
+              <span>Philippines</span>
+              <span class="lang-check">&#10003;</span>
+            </div>
+            <div class="lang-option-row" data-lang="China">
+              <span>China</span>
+              <span class="lang-check">&#10003;</span>
+            </div>
+            <div class="lang-option-row selected" data-lang="United States of America">
+              <span>United States of America</span>
+              <span class="lang-check">&#10003;</span>
+            </div>
+            <div class="lang-option-row" data-lang="Britain">
+              <span>Britain</span>
+              <span class="lang-check">&#10003;</span>
+            </div>
+            <div class="lang-option-row" data-lang="Japan">
+              <span>Japan</span>
+              <span class="lang-check">&#10003;</span>
+            </div>
+            <div class="lang-option-row" data-lang="Vietnam">
+              <span>Vietnam</span>
+              <span class="lang-check">&#10003;</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- =======================================================
+         Bottom Static Area: Glowing 8BitIQ Card & Navigation Bar
+         ======================================================= -->
+    <footer class="bottom-area-container">
+      <div class="bottom-divider"></div>
+
+      <!-- Glowing 8BitIQ Logo Card -->
+      <div class="logo-display-card">
+        <img src="assets/logo.png" alt="8BitIQ Logo" class="logo-img">
+      </div>
+
+      <!-- Bottom Navigation Bar -->
+      <nav class="bottom-nav-bar" aria-label="Main Navigation">
+        <!-- Home -->
+        <a href="index.html" class="nav-item" id="nav-home">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+          </div>
+          <span class="nav-label">Home</span>
+        </a>
+
+        <!-- Leaderboards (Unclickable / Disabled as requested) -->
+        <div class="nav-item disabled" aria-disabled="true" title="Disabled">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="13" width="5" height="8" rx="1"/><rect x="9.5" y="7" width="5" height="14" rx="1"/><rect x="16" y="10" width="5" height="11" rx="1"/></svg>
+          </div>
+          <span class="nav-label">Leaderboards</span>
+        </div>
+
+        <!-- Account (Unclickable / Disabled as requested) -->
+        <div class="nav-item disabled" aria-disabled="true" title="Disabled">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21v-2a5 5 0 0 1 10 0v2"/></svg>
+          </div>
+          <span class="nav-label">Account</span>
+        </div>
+
+        <!-- Settings (Active) -->
+        <div class="nav-item active" id="nav-settings" role="button" tabindex="0">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/><circle cx="10" cy="8" r="1.5" fill="currentColor"/><circle cx="14" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="16" r="1.5" fill="currentColor"/></svg>
+          </div>
+          <span class="nav-label">Settings</span>
+        </div>
+      </nav>
+    </footer>
+
+    <!-- =======================================================
+         Interactive Modals
+         ======================================================= -->
+    <!-- Change Password Modal -->
+    <div id="modal-change-password" class="modal-overlay">
+      <div class="modal-content-box">
+        <div class="modal-header">
+          <h2 class="modal-title">Change Password</h2>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <label for="input-curr-pwd">Current Password</label>
+          <input type="password" id="input-curr-pwd" class="modal-input" placeholder="••••••••">
+          <label for="input-new-pwd">New Password</label>
+          <input type="password" id="input-new-pwd" class="modal-input" placeholder="••••••••">
+        </div>
+        <button class="btn-modal-action" id="btn-save-password">UPDATE PASSWORD</button>
+      </div>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="modal-delete-account" class="modal-overlay">
+      <div class="modal-content-box" style="border-color: var(--pink-accent); box-shadow: 0 0 25px var(--pink-glow);">
+        <div class="modal-header" style="border-color: rgba(255, 42, 109, 0.4);">
+          <h2 class="modal-title" style="color: var(--pink-accent);">Delete Account?</h2>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete your 8bitIQ account? This will erase all high scores, streak records, and profile data permanently.</p>
+        </div>
+        <button class="btn-modal-action danger" id="btn-confirm-delete">CONFIRM DELETION</button>
+      </div>
+    </div>
+
+    <!-- Edit DND Time Modal -->
+    <div id="modal-edit-dnd" class="modal-overlay">
+      <div class="modal-content-box">
+        <div class="modal-header">
+          <h2 class="modal-title">Do Not Disturb</h2>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <label for="input-dnd-start">Start Time</label>
+          <input type="text" id="input-dnd-start" class="modal-input" value="10:00 PM">
+          <label for="input-dnd-end">End Time</label>
+          <input type="text" id="input-dnd-end" class="modal-input" value="9:00 AM">
+        </div>
+        <button class="btn-modal-action" id="btn-save-dnd">SAVE SCHEDULE</button>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <aside id="toast" class="toast-msg" role="status" aria-live="polite">Settings updated</aside>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
