@@ -9,6 +9,7 @@ router.get('/health', (req, res) => {
 
 router.use('/game', require('./game')); // POST /api/game/start, /result, /end
 router.use('/leaderboard', require('./leaderboard')); // GET /api/leaderboard
+router.use('/games', require('./games')); // GET /api/games, /api/games/:id (from Firestore)
 
 router.use('/', require('./register'));
 router.use('/', require('./login'));
