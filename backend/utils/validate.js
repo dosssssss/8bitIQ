@@ -43,6 +43,36 @@ function requiredBoolean(value, name) {
   return value;
 }
 
+// 3 to 20 characters: letters, numbers and underscores only.
+function username(value) {
+  const name = requiredString(value, 'username', { maxLength: 20 }).trim();
+  if (name.length < 3) {
+    throw badRequest('username must be at least 3 characters');
+  }
+  if (!/^[A-Za-z0-9_]+$/.test(name)) {
+    throw badRequest('username can only contain letters, numbers and underscores');
+  }
+  return name;
+}
+
+// 8 to 72 characters (72 keeps it compatible if we switch to bcrypt later).
+// Spaces are allowed and the password is never trimmed.
+function password(value) {
+  if (value === undefined || value === null || value === '') {
+    throw badRequest('password is required');
+  }
+  if (typeof value !== 'string') {
+    throw badRequest('password must be a string');
+  }
+  if (value.length < 8) {
+    throw badRequest('password must be at least 8 characters');
+  }
+  if (value.length > 72) {
+    throw badRequest('password must be at most 72 characters');
+  }
+  return value;
+}
+
 // For query strings like ?limit=10. Returns the default when it's missing.
 function optionalInt(value, name, { min, max, defaultValue }) {
   if (value === undefined || value === '') return defaultValue;
@@ -56,4 +86,12 @@ function optionalInt(value, name, { min, max, defaultValue }) {
   return number;
 }
 
-module.exports = { body, requiredString, optionalString, requiredBoolean, optionalInt };
+module.exports = {
+  body,
+  requiredString,
+  optionalString,
+  requiredBoolean,
+  optionalInt,
+  username,
+  password,
+};
