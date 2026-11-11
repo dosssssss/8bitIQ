@@ -2,9 +2,6 @@ const userService = require('../services/userService');
 const validate = require('../utils/validate');
 const { unauthorized } = require('../utils/apiError');
 
-// POST /api/login
-// Body: { username, password }
-// Wrong username and wrong password get the same answer on purpose.
 function login(req, res) {
   const input = validate.body(req);
   const username = validate.requiredString(input.username, 'username');

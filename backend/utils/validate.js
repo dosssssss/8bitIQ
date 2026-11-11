@@ -43,7 +43,6 @@ function requiredBoolean(value, name) {
   return value;
 }
 
-// 3 to 20 characters: letters, numbers and underscores only.
 function username(value) {
   const name = requiredString(value, 'username', { maxLength: 20 }).trim();
   if (name.length < 3) {
@@ -55,8 +54,6 @@ function username(value) {
   return name;
 }
 
-// 8 to 72 characters (72 keeps it compatible if we switch to bcrypt later).
-// Spaces are allowed and the password is never trimmed.
 function password(value) {
   if (value === undefined || value === null || value === '') {
     throw badRequest('password is required');
