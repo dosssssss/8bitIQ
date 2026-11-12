@@ -3,6 +3,8 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import * as api from '../api';
 import { PixelButton } from '../components';
 import { colors, font } from '../theme';
+import Game3EmojiMatch from '../games/Game3EmojiMatch';
+import Game4QuickMath from '../games/Game4QuickMath';
 
 // The game loop:
 // start a session -> show a mini-game -> send the result -> repeat -> end at 0s.
@@ -104,13 +106,13 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
         <Text style={styles.hudText}>STREAK {session.streak}</Text>
       </View>
 
-      {/* Mini-game area. Replace this placeholder with the game picked by the
-          Game Manager; each mini-game calls handleResult(gameName, success). */}
+      {/* Mini-game area: switches between Game 3 and Game 4 */}
       <View style={styles.gameArea}>
-        <Text style={styles.placeholder}>Mini-games will appear here.</Text>
-        <Text style={styles.hint}>Test buttons until the game screens are built:</Text>
-        <PixelButton label="CORRECT" color={colors.good} disabled={busy} onPress={() => handleResult('placeholder', true)} />
-        <PixelButton label="WRONG" color={colors.bad} disabled={busy} onPress={() => handleResult('placeholder', false)} />
+        {session.gamesCompleted % 2 === 0 ? (
+          <Game3EmojiMatch onAnswer={handleResult} disabled={busy} />
+        ) : (
+          <Game4QuickMath onAnswer={handleResult} disabled={busy} />
+        )}
       </View>
 
       <Text style={styles.games}>Games completed: {session.gamesCompleted}</Text>
@@ -124,8 +126,6 @@ const styles = StyleSheet.create({
   hud: { flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 2, borderColor: colors.surface, paddingBottom: 12 },
   hudText: { color: colors.text, fontFamily: font.family, fontWeight: 'bold', fontSize: 16 },
   gameArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  placeholder: { color: colors.text, fontFamily: font.family, fontSize: 18, marginBottom: 8 },
-  hint: { color: colors.muted, fontFamily: font.family, marginBottom: 16, textAlign: 'center' },
   games: { color: colors.muted, fontFamily: font.family, textAlign: 'center' },
   error: { color: colors.bad, fontFamily: font.family, textAlign: 'center', marginBottom: 16 },
 });

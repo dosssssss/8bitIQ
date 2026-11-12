@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>8bitIQ - Game 4: Quick Math</title>
+  <link rel="stylesheet" href="css/game4.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Main Mobile Handheld Frame -->
+  <main class="game-viewport-container">
+    <div class="scanlines"></div>
+
+    <!-- Decorative Pixel Clusters -->
+    <svg class="pixel-decor decor-tl" width="60" height="60" viewBox="0 0 60 60">
+      <rect x="0" y="8" width="6" height="6" fill="#00efa0"/>
+      <rect x="6" y="8" width="6" height="6" fill="#00b870"/>
+      <rect x="6" y="2" width="6" height="6" fill="#00efa0"/>
+      <rect x="6" y="14" width="6" height="6" fill="#00efa0"/>
+      <rect x="12" y="8" width="6" height="6" fill="#00b870"/>
+      <rect x="24" y="2" width="6" height="6" fill="#0055aa"/>
+      <rect x="18" y="20" width="6" height="6" fill="#00efa0"/>
+      <rect x="24" y="20" width="6" height="6" fill="#00b870"/>
+      <rect x="24" y="14" width="6" height="6" fill="#00efa0"/>
+      <rect x="24" y="26" width="6" height="6" fill="#00efa0"/>
+      <rect x="30" y="20" width="6" height="6" fill="#0055aa"/>
+    </svg>
+
+    <svg class="pixel-decor decor-tr" width="50" height="50" viewBox="0 0 50 50">
+      <rect x="20" y="10" width="6" height="6" fill="#0055aa"/>
+      <rect x="32" y="4" width="6" height="6" fill="#003366"/>
+      <rect x="26" y="20" width="6" height="6" fill="#0055aa"/>
+    </svg>
+
+    <svg class="pixel-decor decor-ml" width="40" height="60" viewBox="0 0 40 60">
+      <rect x="2" y="10" width="6" height="6" fill="#003366"/>
+      <rect x="8" y="10" width="6" height="6" fill="#0055aa"/>
+      <rect x="8" y="4" width="6" height="6" fill="#003366"/>
+      <rect x="8" y="16" width="6" height="6" fill="#003366"/>
+      <rect x="14" y="10" width="6" height="6" fill="#003366"/>
+      <rect x="4" y="34" width="6" height="6" fill="#00efa0"/>
+      <rect x="10" y="34" width="6" height="6" fill="#00b870"/>
+      <rect x="10" y="28" width="6" height="6" fill="#00efa0"/>
+      <rect x="10" y="40" width="6" height="6" fill="#00efa0"/>
+      <rect x="16" y="34" width="6" height="6" fill="#00b870"/>
+    </svg>
+
+    <svg class="pixel-decor decor-mr" width="40" height="60" viewBox="0 0 40 60">
+      <rect x="14" y="10" width="6" height="6" fill="#00efa0"/>
+      <rect x="20" y="10" width="6" height="6" fill="#00b870"/>
+      <rect x="20" y="4" width="6" height="6" fill="#00efa0"/>
+      <rect x="20" y="16" width="6" height="6" fill="#00efa0"/>
+      <rect x="26" y="10" width="6" height="6" fill="#0055aa"/>
+      <rect x="20" y="36" width="6" height="6" fill="#003366"/>
+    </svg>
+
+    <svg class="pixel-decor decor-bl" width="60" height="80" viewBox="0 0 60 80">
+      <rect x="4" y="10" width="6" height="6" fill="#00efa0"/>
+      <rect x="10" y="10" width="6" height="6" fill="#00b870"/>
+      <rect x="10" y="4" width="6" height="6" fill="#00efa0"/>
+      <rect x="10" y="16" width="6" height="6" fill="#00efa0"/>
+      <rect x="16" y="10" width="6" height="6" fill="#00b870"/>
+      <rect x="20" y="26" width="6" height="6" fill="#0055aa"/>
+      <rect x="12" y="42" width="6" height="6" fill="#00efa0"/>
+      <rect x="18" y="42" width="6" height="6" fill="#00b870"/>
+      <rect x="18" y="36" width="6" height="6" fill="#00efa0"/>
+      <rect x="18" y="48" width="6" height="6" fill="#00efa0"/>
+      <rect x="24" y="42" width="6" height="6" fill="#0055aa"/>
+    </svg>
+
+    <svg class="pixel-decor decor-br" width="90" height="90" viewBox="0 0 90 90">
+      <rect x="20" y="20" width="6" height="6" fill="#00efa0"/>
+      <rect x="26" y="20" width="6" height="6" fill="#00b870"/>
+      <rect x="26" y="14" width="6" height="6" fill="#00efa0"/>
+      <rect x="26" y="26" width="6" height="6" fill="#00efa0"/>
+      <rect x="32" y="20" width="6" height="6" fill="#00b870"/>
+      <rect x="44" y="14" width="6" height="6" fill="#0055aa"/>
+      <rect x="50" y="14" width="6" height="6" fill="#003366"/>
+      <rect x="38" y="32" width="6" height="6" fill="#00efa0"/>
+      <rect x="44" y="32" width="6" height="6" fill="#00b870"/>
+      <rect x="44" y="26" width="6" height="6" fill="#00efa0"/>
+      <rect x="44" y="38" width="6" height="6" fill="#00efa0"/>
+      <rect x="50" y="32" width="6" height="6" fill="#0055aa"/>
+      <rect x="62" y="26" width="6" height="6" fill="#00efa0"/>
+      <rect x="68" y="26" width="6" height="6" fill="#00b870"/>
+      <rect x="68" y="20" width="6" height="6" fill="#00efa0"/>
+      <rect x="68" y="32" width="6" height="6" fill="#00efa0"/>
+      <rect x="74" y="26" width="6" height="6" fill="#003366"/>
+    </svg>
+
+    <!-- Main Screen Content -->
+    <div class="screen-content">
+
+      <!-- Top Bar: X Exit | + | DEMO 1/6 -->
+      <header class="top-bar">
+        <button id="btn-exit-game" class="btn-exit" title="Exit Game" aria-label="Exit Game">
+          <span>&times; Exit</span>
+        </button>
+        <span class="center-cross">+</span>
+        <span class="demo-indicator">DEMO 1/6</span>
+      </header>
+
+      <!-- Game Title Badge: QUICK MATH -->
+      <div class="title-badge-wrap">
+        <div class="title-badge">QUICK MATH</div>
+      </div>
+
+      <!-- Main Cyan Frame Card -->
+      <section class="game-card">
+        <!-- Row 1: TIME 00:32 | SCORE 0300 -->
+        <div class="card-hud-row">
+          <span class="hud-time" id="hud-time-val">TIME 00:32</span>
+          <span class="hud-score" id="hud-score-val">SCORE 0300</span>
+        </div>
+
+        <!-- Horizontal Red Progress Bar (Quick Math Mockup) -->
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+
+        <!-- Row 2: STREAK x0 | GAMES 4 -->
+        <div class="card-subhud-row">
+          <span class="hud-streak" id="hud-streak-val">STREAK x0</span>
+          <span class="hud-games" id="hud-games-val">GAMES 4</span>
+        </div>
+
+        <!-- Playing Area: Problem & 2x2 Options -->
+        <div id="playing-problem-area">
+          <div class="math-problem-box">
+            <p class="problem-prompt">Can you solve this?</p>
+            <div class="math-equation-text" id="math-equation-text">
+              19 + 3( 3 &times; 3 ) =
+              <span class="question-mark">?</span>
+            </div>
+          </div>
+
+          <!-- 2x2 Answer Grid -->
+          <div class="math-options-grid" id="math-options-grid"></div>
+
+          <!-- Feedback message (CORRECT! / WRONG!) -->
+          <div class="feedback-message" id="feedback-message"></div>
+        </div>
+
+        <!-- Finish Area: Time Is Up & Worked Answers (Image 2 Right) -->
+        <div id="finish-answers-area" style="display: none;">
+          <div class="time-up-banner">TIME IS UP!</div>
+
+          <div class="answers-display-card">
+            <p class="answers-card-title">Here are the answers!</p>
+            <div class="solution-equation-box">
+              9 / 2 - 3 + 9(0)<br>= 46
+            </div>
+            <div class="solution-equation-box">
+              9 / 2 - 3 + 9(0)<br>= 1.5
+            </div>
+          </div>
+
+          <!-- Finish Stats Summary -->
+          <div class="stats-summary-block">
+            <div class="stats-row">
+              <span>Score</span>
+              <span class="stats-val" id="summary-score">0350</span>
+            </div>
+            <div class="stats-row">
+              <span>Time</span>
+              <span class="stats-val" id="summary-time">0:32</span>
+            </div>
+            <div class="stats-row">
+              <span>Best Streak</span>
+              <span class="stats-val" id="summary-best-streak">1</span>
+            </div>
+            <div class="stats-row">
+              <span>Misses</span>
+              <span class="stats-val" id="summary-misses">1</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Subtext Below Card -->
+      <p class="instructions-subtext" id="instructions-subtext">
+        Calculate the math problem
+      </p>
+
+      <!-- Bottom Digital Countdown Pill (Playing State) -->
+      <footer class="bottom-timer-pill" id="playing-footer">
+        <span class="digital-clock-display" id="digital-clock">0:32</span>
+      </footer>
+
+      <!-- Bottom Big NEXT > Button (Finish State) -->
+      <footer id="finish-footer" style="display: none; width: 100%; margin-top: auto;">
+        <button class="btn-next-action" id="btn-next-action">
+          <div class="brick-nubs">
+            <span class="brick-nub"></span>
+            <span class="brick-nub"></span>
+            <span class="brick-nub"></span>
+          </div>
+          <span>NEXT &gt;</span>
+        </button>
+      </footer>
+
+    </div>
+  </main>
+
+  <script src="js/game4.js"></script>
+</body>
+</html>
