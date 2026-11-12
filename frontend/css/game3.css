@@ -1,0 +1,525 @@
+/* ============================================================
+   8bitIQ Game 3: Emoji Match UI
+   Pixel-perfect match to Figma Mockups (Phase 4 Mini-games)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&display=swap');
+
+:root {
+  --game-bg: #030713;
+  --game-frame: #020612;
+  --card-bg: #030b20;
+  
+  --cyan-bright: #00f0ff;
+  --cyan-glow: rgba(0, 240, 255, 0.45);
+  --cyan-dark: #00455c;
+  
+  --mint-green: #00efa0;
+  --mint-glow: rgba(0, 239, 160, 0.55);
+  --mint-dark: #022b1c;
+  
+  --pink-streak: #ff2a6d;
+  --pink-glow: rgba(255, 42, 109, 0.5);
+  
+  --red-miss: #ff1a40;
+  --red-glow: rgba(255, 26, 64, 0.7);
+
+  --font-pixel: 'Pixelify Sans', 'Press Start 2P', 'Courier New', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #01040c;
+  color: #ffffff;
+  font-family: var(--font-pixel);
+  overflow-x: hidden;
+  user-select: none;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% 30%, #06112c 0%, #020715 70%, #010309 100%);
+  padding: 10px;
+}
+
+/* Outer phone frame */
+.game-viewport-container {
+  width: 100%;
+  max-width: 414px;
+  height: 870px;
+  max-height: 96vh;
+  background: var(--game-bg);
+  border-radius: 24px;
+  border: 2px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.25), inset 0 0 15px rgba(0, 5, 20, 0.85);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* CRT Scanlines */
+.scanlines {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.18) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.02),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.02)
+  );
+  background-size: 100% 3px, 6px 100%;
+  z-index: 40;
+  opacity: 0.6;
+}
+
+/* Background pixel cross and glitch clusters */
+.pixel-decor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.decor-tl {
+  top: 18px;
+  left: 12px;
+}
+
+.decor-tr {
+  top: 25px;
+  right: 14px;
+}
+
+.decor-ml {
+  top: 280px;
+  left: 6px;
+}
+
+.decor-mr {
+  top: 240px;
+  right: 6px;
+}
+
+.decor-bl {
+  bottom: 80px;
+  left: 8px;
+}
+
+.decor-br {
+  bottom: 20px;
+  right: 12px;
+}
+
+/* Main inner screen layout */
+.screen-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 16px 20px;
+  position: relative;
+  z-index: 5;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.screen-content::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   Top Bar: X Exit | + | DEMO 1/6
+   ============================================================ */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.btn-exit {
+  background: transparent;
+  border: none;
+  color: var(--cyan-bright);
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.btn-exit:hover {
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.center-cross {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.demo-indicator {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   Game Title Badge: EMOJI MATCH
+   ============================================================ */
+.title-badge-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.title-badge {
+  background: #020a1c;
+  border: 2px solid var(--cyan-bright);
+  border-radius: 8px;
+  box-shadow: 0 0 10px var(--cyan-glow), inset 0 0 5px rgba(0, 240, 255, 0.2);
+  padding: 6px 22px;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-align: center;
+}
+
+/* ============================================================
+   Main Cyberpunk Card
+   ============================================================ */
+.game-card {
+  background: var(--card-bg);
+  border: 2.5px solid var(--cyan-bright);
+  border-radius: 16px;
+  box-shadow: 0 0 16px var(--cyan-glow), inset 0 0 10px rgba(0, 240, 255, 0.2);
+  padding: 16px 14px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Header inside card */
+.card-hud-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.hud-time, .hud-score, .hud-games {
+  color: var(--cyan-bright);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.hud-streak {
+  color: var(--pink-streak);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 6px var(--pink-glow);
+}
+
+/* Horizontal Progress Bar */
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background: #061938;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--mint-green);
+  box-shadow: 0 0 8px var(--mint-glow);
+  width: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Sub-row: STREAK x0 | GAMES 3 */
+.card-subhud-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   4x4 Tile Grid
+   ============================================================ */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 9px;
+  margin-bottom: 12px;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+}
+
+.tile {
+  background: #03102c;
+  border: 2px solid var(--cyan-bright);
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.tile:hover:not(.revealed):not(.matched) {
+  transform: scale(1.04);
+  box-shadow: 0 0 10px var(--cyan-bright);
+}
+
+/* Face Down '?' */
+.tile-question {
+  color: var(--cyan-bright);
+  font-size: 22px;
+  font-weight: 700;
+  text-shadow: 0 0 4px var(--cyan-glow);
+  transition: opacity 0.15s ease;
+}
+
+/* Emoji Content (SVG) */
+.tile-emoji {
+  width: 70%;
+  height: 70%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--mint-green);
+  filter: drop-shadow(0 0 4px var(--mint-glow));
+}
+
+.tile-emoji svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+/* Revealed State */
+.tile.revealed {
+  background: #020a1c;
+  border-color: var(--cyan-bright);
+  box-shadow: 0 0 10px var(--cyan-glow);
+}
+
+.tile.revealed .tile-question {
+  display: none;
+}
+
+.tile.revealed .tile-emoji {
+  display: flex;
+}
+
+/* Matched State */
+.tile.matched {
+  background: #031224;
+  border-color: var(--mint-green);
+  box-shadow: 0 0 10px var(--mint-glow), inset 0 0 6px rgba(0, 239, 160, 0.2);
+  cursor: default;
+}
+
+.tile.matched .tile-question {
+  display: none;
+}
+
+.tile.matched .tile-emoji {
+  display: flex;
+}
+
+/* Mismatch State (Red glowing border) */
+.tile.mismatch {
+  border-color: var(--red-miss) !important;
+  box-shadow: 0 0 12px var(--red-glow), inset 0 0 6px rgba(255, 26, 64, 0.4) !important;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Bottom of card: PAIRS FOUND 2/8 */
+.pairs-status-text {
+  text-align: center;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+}
+
+/* Subtext Below Card */
+.instructions-subtext {
+  margin-top: 10px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.4px;
+  position: relative;
+}
+
+.instructions-subtext .pixel-square {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
+  margin: 0 4px;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   Bottom Big Digital Countdown Pill
+   ============================================================ */
+.bottom-timer-pill {
+  width: 100%;
+  height: 72px;
+  background: var(--mint-green);
+  border-radius: 14px;
+  box-shadow: 0 0 16px var(--mint-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  cursor: default;
+}
+
+.digital-clock-display {
+  color: #020713;
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+/* ============================================================
+   Board Cleared / Finish State (Image 4)
+   ============================================================ */
+.board-cleared-banner {
+  border: 2px solid var(--cyan-bright);
+  background: #020a1c;
+  border-radius: 8px;
+  box-shadow: 0 0 10px var(--cyan-glow);
+  padding: 8px 12px;
+  text-align: center;
+  color: var(--mint-green);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 14px;
+}
+
+.stats-summary-block {
+  margin-top: 12px;
+  border-top: 1px dashed rgba(0, 240, 255, 0.3);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #c7d8ee;
+  letter-spacing: 0.5px;
+}
+
+.stats-val {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Big Green NEXT > Button */
+.btn-next-action {
+  width: 100%;
+  height: 64px;
+  background: var(--mint-green);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 0 18px var(--mint-glow);
+  color: #020713;
+  font-family: var(--font-pixel);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-top: auto;
+  transition: transform 0.15s ease, background 0.15s ease;
+  position: relative;
+}
+
+.btn-next-action:hover {
+  transform: translateY(-2px);
+  background: #2affb0;
+  box-shadow: 0 0 24px var(--mint-green);
+}
+
+.brick-nubs {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+}
+
+.brick-nub {
+  width: 10px;
+  height: 5px;
+  background: #ffffff;
+  border-radius: 1px;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+  .game-viewport-container {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
+}
