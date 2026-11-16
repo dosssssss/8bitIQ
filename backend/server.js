@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const apiRoutes = require('./routes');
 const sessionService = require('./services/sessionService');
+const { usingSupabase } = require('./supabase');
 const { apiNotFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -22,6 +23,9 @@ app.use('/api', apiNotFound);
 app.use(errorHandler);
 
 if (require.main === module) {
+  // Read .env only when the server is started, never when tests load this file.
+  require('dotenv').config({ quiet: true });
+  console.log(`Data store: ${usingSupabase() ? 'Supabase' : 'memory (lost on restart)'}`);
   sessionService.startExpiryCheck();
   app.listen(PORT, () => {
     console.log(`8bitIQ running at http://localhost:${PORT}`);
