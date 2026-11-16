@@ -1,6 +1,8 @@
 const sessionService = require('../services/sessionService');
+const userService = require('../services/userService');
 const validate = require('../utils/validate');
-const { notFound, conflict } = require('../utils/apiError');
+const asyncHandler = require('../utils/asyncHandler');
+const { badRequest, notFound, conflict } = require('../utils/apiError');
 
 function findSession(sessionId) {
   const session = sessionService.getSession(sessionId);
@@ -10,9 +12,12 @@ function findSession(sessionId) {
 
 // POST /api/game/start
 // Body (optional): { playerId } once login is wired up.
-function startGame(req, res) {
+async function startGame(req, res) {
   const input = validate.body(req);
   const playerId = validate.optionalString(input.playerId, 'playerId');
+  if (playerId && !(await userService.playerExists(playerId))) {
+    throw badRequest('Unknown playerId');
+  }
 
   const session = sessionService.createSession({ playerId });
   res.status(201).json({ success: true, ...sessionService.toPublic(session) });
@@ -30,7 +35,8 @@ function submitResult(req, res) {
 
   const session = findSession(sessionId);
   if (sessionService.isOver(session)) {
-    sessionService.finishSession(session);
+    // Saved in the background. If it fails, the 5-second check retries.
+    sessionService.finishSession(session).catch(() => {});
     throw conflict('Game is over', { gameOver: true });
   }
 
@@ -42,7 +48,7 @@ function submitResult(req, res) {
 // Body: { sessionId }
 // The page calls this when its countdown reaches 0. Returns the final
 // result for the game over screen. Safe to call more than once.
-function endGame(req, res) {
+async function endGame(req, res) {
   const input = validate.body(req);
   const sessionId = validate.requiredString(input.sessionId, 'sessionId');
 
@@ -53,7 +59,7 @@ function endGame(req, res) {
     });
   }
 
-  const finalResult = sessionService.finishSession(session);
+  const finalResult = await sessionService.finishSession(session);
   res.json({
     success: true,
     gameOver: true,
@@ -64,4 +70,8 @@ function endGame(req, res) {
   });
 }
 
-module.exports = { startGame, submitResult, endGame };
+module.exports = {
+  startGame: asyncHandler(startGame),
+  submitResult: asyncHandler(submitResult),
+  endGame: asyncHandler(endGame),
+};

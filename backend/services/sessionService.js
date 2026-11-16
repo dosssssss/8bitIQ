@@ -43,6 +43,7 @@ function createSession({ playerId = null } = {}, now = Date.now()) {
     endsAt: now + GAME_DURATION_SECONDS * 1000,
     finished: false,
     finalResult: null,
+    finishing: null, // the save in progress, so a run is saved only once
   };
   sessions.set(session.id, session);
   return session;
@@ -74,42 +75,61 @@ function applyResult(session, success, now = Date.now()) {
   }
 
   if (getTimeRemaining(session, now) === 0) {
-    finishSession(session, now);
+    // Saved in the background. If saving fails, the 5-second check retries.
+    finishSession(session, now).catch((err) => {
+      console.error('Could not save a finished run:', err.message);
+    });
   }
   return session;
 }
 
-// Ends a run and saves it once. Calling it again returns the saved result
-// without saving a second copy.
+// Ends a run and saves it once. Calling it again (even while the save is
+// still running) returns the same result and never saves a second copy.
 function finishSession(session, now = Date.now()) {
-  if (session.finalResult) return session.finalResult;
-
-  session.finished = true;
-  session.finalResult = resultService.saveResult({
-    playerId: session.playerId,
-    score: session.score,
-    gamesCompleted: session.gamesCompleted,
-    bestStreak: session.bestStreak,
-    date: new Date(now).toISOString(),
-  });
-  return session.finalResult;
+  if (!session.finishing) {
+    session.finished = true;
+    session.finishing = resultService
+      .saveResult({
+        playerId: session.playerId,
+        score: session.score,
+        gamesCompleted: session.gamesCompleted,
+        bestStreak: session.bestStreak,
+        date: new Date(now).toISOString(),
+      })
+      .then((saved) => {
+        session.finalResult = saved;
+        return saved;
+      });
+    // If saving fails, forget it so the next call (or the 5-second check)
+    // tries again instead of losing the run.
+    session.finishing.catch(() => {
+      session.finishing = null;
+    });
+  }
+  return session.finishing;
 }
 
 // Ends every run whose time is up, so a run is still saved when the player
-// closes the tab before the game over screen.
-function finishExpiredSessions(now = Date.now()) {
-  let count = 0;
+// closes the tab before the game over screen. Returns how many it ended.
+async function finishExpiredSessions(now = Date.now()) {
+  const expired = [];
   for (const session of sessions.values()) {
-    if (!session.finalResult && isOver(session, now)) {
-      finishSession(session, now);
-      count += 1;
+    if (!session.finishing && isOver(session, now)) expired.push(session);
+  }
+
+  const outcomes = await Promise.allSettled(expired.map((s) => finishSession(s, now)));
+  for (const outcome of outcomes) {
+    if (outcome.status === 'rejected') {
+      console.error('Could not save a finished run:', outcome.reason.message);
     }
   }
-  return count;
+  return expired.length;
 }
 
 function startExpiryCheck(intervalMs = 5000) {
-  const timer = setInterval(() => finishExpiredSessions(), intervalMs);
+  const timer = setInterval(() => {
+    finishExpiredSessions();
+  }, intervalMs);
   timer.unref();
   return timer;
 }

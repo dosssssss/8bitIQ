@@ -29,8 +29,8 @@ export default function LeaderboardScreen({ onBack }) {
           renderItem={({ item }) => (
             <View style={styles.row}>
               <Text style={[styles.cell, styles.rank]}>#{item.rank}</Text>
-              {/* Shows playerId until login adds usernames. */}
-              <Text style={[styles.cell, styles.name]} numberOfLines={1}>{item.playerId || 'Guest'}</Text>
+              {/* Username of the player, or Guest for runs played without logging in. */}
+              <Text style={[styles.cell, styles.name]} numberOfLines={1}>{item.username || 'Guest'}</Text>
               <Text style={styles.cell}>{item.gamesCompleted} games</Text>
               <Text style={[styles.cell, styles.score]}>{item.score}</Text>
             </View>

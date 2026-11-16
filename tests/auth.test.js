@@ -35,7 +35,7 @@ test('POST /api/register creates an account and returns a token', async () => {
     assert.strictEqual(body.user.username, username);
     assert.match(body.user.id, /^[0-9a-f-]{36}$/);
     assert.match(body.token, /^[0-9a-f]{64}$/);
-    assert.strictEqual(userService.getUserByToken(body.token).id, body.user.id);
+    assert.strictEqual((await userService.getUserByToken(body.token)).id, body.user.id);
   });
 });
 
@@ -119,12 +119,12 @@ test('login requires username and password', async () => {
   });
 });
 
-test('expired tokens stop working', () => {
-  const user = userService.createUser(uniqueName(), 'secret123');
+test('expired tokens stop working', async () => {
+  const user = await userService.createUser(uniqueName(), 'secret123');
   const now = Date.now();
-  const token = userService.createToken(user.id, now);
-  assert.ok(userService.getUserByToken(token, now + 1000));
-  assert.strictEqual(userService.getUserByToken(token, now + userService.TOKEN_TTL_MS + 1), null);
+  const token = await userService.createToken(user.id, now);
+  assert.ok(await userService.getUserByToken(token, now + 1000));
+  assert.strictEqual(await userService.getUserByToken(token, now + userService.TOKEN_TTL_MS + 1), null);
 });
 
 test('a registered user id can be used as the playerId for a game', async () => {
