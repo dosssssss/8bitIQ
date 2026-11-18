@@ -6,4 +6,5 @@ node_modules/
 Thumbs.db
 *.sqlite
 *.db
-serviceAccountKey.json
+serviceAccountKey.jsonbackend/.build/
+backend/.build/

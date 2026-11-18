@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-const EMOJIS = ['👓', '👑', '😭', '🖤', '💔', '🎸', '👻', '💚'];
-
-function shuffle(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
+export default function Game3EmojiMatch({ challenge, onPairAnswer, disabled = false }) {
   const [deck, setDeck] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
@@ -21,60 +10,47 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
   const [pairsCount, setPairsCount] = useState(0);
 
   useEffect(() => {
-    // 8 pairs (16 tiles total)
-    const cards = shuffle([...EMOJIS, ...EMOJIS]).map((emoji, index) => ({
-      id: index,
-      emoji,
-    }));
-    setDeck(cards);
+    setDeck(challenge?.tiles || []);
     setFlipped([]);
     setMatched([]);
     setMismatched([]);
     setPairsCount(0);
     setLockBoard(false);
-  }, []);
+  }, [challenge]);
 
-  function handleCardPress(index) {
-    if (disabled || lockBoard) return;
-    if (flipped.includes(index) || matched.includes(index)) return;
+  async function handleCardPress(index) {
+    if (disabled || lockBoard || flipped.includes(index) || matched.includes(index)) return;
 
     const nextFlipped = [...flipped, index];
     setFlipped(nextFlipped);
 
-    if (nextFlipped.length === 2) {
-      setLockBoard(true);
-      const [idx1, idx2] = nextFlipped;
-      const card1 = deck[idx1];
-      const card2 = deck[idx2];
+    if (nextFlipped.length !== 2) return;
 
-      if (card1.emoji === card2.emoji) {
-        // MATCH
-        setTimeout(() => {
-          const nextMatched = [...matched, idx1, idx2];
-          setMatched(nextMatched);
-          setFlipped([]);
-          setLockBoard(false);
-          const newPairs = pairsCount + 1;
-          setPairsCount(newPairs);
+    setLockBoard(true);
 
-          if (onAnswer) {
-            onAnswer('game3', true);
-          }
-        }, 300);
+    const [idx1, idx2] = nextFlipped;
+    const card1 = deck[idx1];
+    const card2 = deck[idx2];
+
+    try {
+      const result = await onPairAnswer({
+        firstTileId: card1.id,
+        secondTileId: card2.id,
+      });
+
+      if (result?.pairMatched) {
+        setMatched((old) => [...old, idx1, idx2]);
+        setPairsCount((old) => old + 1);
+        setFlipped([]);
       } else {
-        // MISMATCH
+        setMismatched([idx1, idx2]);
         setTimeout(() => {
-          setMismatched([idx1, idx2]);
-          if (onAnswer) {
-            onAnswer('game3', false);
-          }
-          setTimeout(() => {
-            setFlipped([]);
-            setMismatched([]);
-            setLockBoard(false);
-          }, 700);
-        }, 300);
+          setFlipped([]);
+          setMismatched([]);
+        }, 700);
       }
+    } finally {
+      setLockBoard(false);
     }
   }
 
@@ -86,7 +62,9 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
 
       <View style={styles.boardCard}>
         <View style={styles.pairsRow}>
-          <Text style={styles.pairsText}>PAIRS FOUND {pairsCount}/8</Text>
+          <Text style={styles.pairsText}>
+            PAIRS FOUND {pairsCount}/{challenge?.totalPairs || 8}
+          </Text>
         </View>
 
         <View style={styles.grid}>
@@ -117,7 +95,9 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
         </View>
       </View>
 
-      <Text style={styles.subtext}>TAP A TILE TO FLIP! FIND ALL PAIRS TO WIN.</Text>
+      <Text style={styles.subtext}>
+        TAP A TILE TO FLIP! FIND ALL PAIRS TO WIN.
+      </Text>
     </View>
   );
 }
@@ -146,6 +126,7 @@ const styles = StyleSheet.create({
   },
   boardCard: {
     width: '94%',
+    maxWidth: 640,
     backgroundColor: '#030b20',
     borderWidth: 2.5,
     borderColor: '#00f0ff',
@@ -153,9 +134,7 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
   },
-  pairsRow: {
-    marginBottom: 8,
-  },
+  pairsRow: { marginBottom: 8 },
   pairsText: {
     color: '#ffffff',
     fontFamily: 'monospace',
@@ -187,18 +166,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#031224',
     borderColor: '#00efa0',
   },
-  tileMismatched: {
-    borderColor: '#ff1a40',
-  },
+  tileMismatched: { borderColor: '#ff1a40' },
   questionText: {
     color: '#00f0ff',
     fontFamily: 'monospace',
     fontWeight: 'bold',
     fontSize: 20,
   },
-  emojiText: {
-    fontSize: 22,
-  },
+  emojiText: { fontSize: 22 },
   subtext: {
     color: '#ffffff',
     fontFamily: 'monospace',

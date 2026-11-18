@@ -1,45 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-const PROBLEMS = [
-  {
-    expression: '19 + 3( 3 × 3 ) =',
-    options: ['46', '-41', '31', '198'],
-    correct: '46',
-  },
-  {
-    expression: '9 / 2 - 3 + 9(0) =',
-    options: ['-9', '-1', '1.5', '24'],
-    correct: '1.5',
-  },
-];
-
-export default function Game4QuickMath({ onAnswer, disabled = false }) {
-  const [problemIndex, setProblemIndex] = useState(0);
+export default function Game4QuickMath({ challenge, onAnswer, disabled = false }) {
   const [selected, setSelected] = useState(null);
-  const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong'
+  const [feedback, setFeedback] = useState(null);
   const [lock, setLock] = useState(false);
 
-  const current = PROBLEMS[problemIndex % PROBLEMS.length];
+  useEffect(() => {
+    setSelected(null);
+    setFeedback(null);
+    setLock(false);
+  }, [challenge]);
 
-  function handleSelect(option) {
+  const symbols = { '*': '×', '/': '÷', '+': '+', '-': '−' };
+  const expression = `${challenge?.firstNumber} ${symbols[challenge?.operator] || challenge?.operator} ${challenge?.secondNumber} =`;
+  const options = (challenge?.choices || []).map(String);
+
+  async function handleSelect(option) {
     if (disabled || lock) return;
+
     setLock(true);
     setSelected(option);
 
-    const isCorrect = option === current.correct;
-    setFeedback(isCorrect ? 'correct' : 'wrong');
+    try {
+      const result = await onAnswer(Number(option));
+      if (!result) return;
 
-    if (onAnswer) {
-      onAnswer('game4', isCorrect);
-    }
-
-    setTimeout(() => {
-      setSelected(null);
-      setFeedback(null);
+      setFeedback(result.correct ? 'correct' : 'wrong');
+    } finally {
       setLock(false);
-      setProblemIndex((idx) => (idx + 1) % PROBLEMS.length);
-    }, 1000);
+    }
   }
 
   return (
@@ -51,12 +41,12 @@ export default function Game4QuickMath({ onAnswer, disabled = false }) {
       <View style={styles.card}>
         <View style={styles.problemBox}>
           <Text style={styles.prompt}>Can you solve this?</Text>
-          <Text style={styles.equationText}>{current.expression}</Text>
+          <Text style={styles.equationText}>{expression}</Text>
           <Text style={styles.questionMark}>?</Text>
         </View>
 
         <View style={styles.grid}>
-          {current.options.map((opt) => {
+          {options.map((opt) => {
             const isSelected = selected === opt;
             const isCorrect = isSelected && feedback === 'correct';
             const isWrong = isSelected && feedback === 'wrong';

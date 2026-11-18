@@ -3,6 +3,10 @@ const userService = require('../services/userService');
 const validate = require('../utils/validate');
 const asyncHandler = require('../utils/asyncHandler');
 const { badRequest, notFound, conflict } = require('../utils/apiError');
+const { createGameChallenge } = require('../.build/games/gameEngine.js');
+
+const activeChallenges = new Map();
+const GAME_IDS = ['emoji-match', 'quick-math'];
 
 function findSession(sessionId) {
   const session = sessionService.getSession(sessionId);
@@ -44,6 +48,99 @@ function submitResult(req, res) {
   res.json({ success: true, ...sessionService.toPublic(session), gameOver: session.finished });
 }
 
+
+// POST /api/game/challenge
+function createChallenge(req, res) {
+  const input = validate.body(req);
+  const sessionId = validate.requiredString(input.sessionId, 'sessionId');
+  const gameId = validate.requiredString(input.gameId, 'gameId');
+
+  if (!GAME_IDS.includes(gameId)) throw badRequest('Unsupported game');
+
+  const session = findSession(sessionId);
+  if (sessionService.isOver(session)) throw conflict('Game is over', { gameOver: true });
+
+  const challenge = createGameChallenge(gameId);
+  activeChallenges.set(challenge.challengeId, {
+    sessionId,
+    gameId,
+    validate: challenge.validate,
+    matchedTileIds: new Set(),
+    matchedPairs: 0,
+    totalPairs: challenge.publicChallenge.totalPairs || 0,
+  });
+
+  res.json({
+    success: true,
+    challengeId: challenge.challengeId,
+    gameId,
+    challenge: challenge.publicChallenge,
+  });
+}
+
+// POST /api/game/answer
+function submitAnswer(req, res) {
+  const input = validate.body(req);
+  const sessionId = validate.requiredString(input.sessionId, 'sessionId');
+  const challengeId = validate.requiredString(input.challengeId, 'challengeId');
+
+  const active = activeChallenges.get(challengeId);
+  if (!active || active.sessionId !== sessionId) {
+    throw badRequest('Invalid or already answered challenge');
+  }
+
+  const session = findSession(sessionId);
+  if (sessionService.isOver(session)) {
+    activeChallenges.delete(challengeId);
+    throw conflict('Game is over', { gameOver: true });
+  }
+
+  const correct = active.validate(input.answer);
+
+  if (active.gameId === 'emoji-match') {
+    if (correct) {
+      const { firstTileId, secondTileId } = input.answer || {};
+      if (
+        active.matchedTileIds.has(firstTileId) ||
+        active.matchedTileIds.has(secondTileId)
+      ) {
+        throw badRequest('A matched tile cannot be reused');
+      }
+
+      active.matchedTileIds.add(firstTileId);
+      active.matchedTileIds.add(secondTileId);
+      active.matchedPairs += 1;
+    }
+
+    const completed = active.matchedPairs >= active.totalPairs;
+    if (completed) {
+      activeChallenges.delete(challengeId);
+      sessionService.applyResult(session, true);
+    }
+
+    return res.json({
+      success: true,
+      correct,
+      pairMatched: correct,
+      completed,
+      matchedPairs: active.matchedPairs,
+      ...sessionService.toPublic(session),
+      gameOver: session.finished,
+    });
+  }
+
+  activeChallenges.delete(challengeId);
+  sessionService.applyResult(session, correct);
+
+  res.json({
+    success: true,
+    correct,
+    completed: true,
+    ...sessionService.toPublic(session),
+    gameOver: session.finished,
+  });
+}
+
 // POST /api/game/end
 // Body: { sessionId }
 // The page calls this when its countdown reaches 0. Returns the final
@@ -73,5 +170,7 @@ async function endGame(req, res) {
 module.exports = {
   startGame: asyncHandler(startGame),
   submitResult: asyncHandler(submitResult),
+  createChallenge: asyncHandler(createChallenge),
+  submitAnswer: asyncHandler(submitAnswer),
   endGame: asyncHandler(endGame),
 };
