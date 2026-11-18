@@ -55,3 +55,17 @@ export function getLeaderboard({ limit = 10, playerId } = {}) {
   if (playerId) query.set('playerId', playerId);
   return request(`/api/leaderboard?${query.toString()}`);
 }
+
+export function getGameChallenge(sessionId, gameId) {
+  return request('/api/game/challenge', {
+    method: 'POST',
+    body: { sessionId, gameId },
+  });
+}
+
+export function submitGameAnswer(sessionId, challengeId, answer) {
+  return request('/api/game/answer', {
+    method: 'POST',
+    body: { sessionId, challengeId, answer },
+  });
+}

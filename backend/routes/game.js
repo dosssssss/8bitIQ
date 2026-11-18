@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.post('/start', gameController.startGame);
 router.post('/result', gameController.submitResult);
+router.post('/challenge', gameController.createChallenge);
+router.post('/answer', gameController.submitAnswer);
 router.post('/end', gameController.endGame);
 
 module.exports = router;
