@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useFinish } from './GameFrame';
 
-// One round: find all 8 pairs to win. MAX_MISSES wrong pairs loses the round.
-const MAX_MISSES = 5;
+// One round = one try: flip two tiles. A matching pair wins the round, a
+// wrong pair loses it, and either way the next mini-game starts.
 // At the start of a round every emoji is shown face up for this long, then
 // the tiles flip face down (same places) and the player matches from memory.
 const PREVIEW_SECONDS = 2;
@@ -25,8 +25,6 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
   const [matched, setMatched] = useState([]);
   const [mismatched, setMismatched] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
-  const [pairsCount, setPairsCount] = useState(0);
-  const [misses, setMisses] = useState(0);
   const [feedback, setFeedback] = useState(null);
   const [preview, setPreview] = useState(PREVIEW_SECONDS); // seconds left, 0 = playing
   const finish = useFinish('emojiMatch', onAnswer, setFeedback);
@@ -41,7 +39,6 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
     setFlipped([]);
     setMatched([]);
     setMismatched([]);
-    setPairsCount(0);
     setLockBoard(false);
   }, []);
 
@@ -68,27 +65,15 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
       if (card1.emoji === card2.emoji) {
         // MATCH
         setTimeout(() => {
-          const nextMatched = [...matched, idx1, idx2];
-          setMatched(nextMatched);
+          setMatched([idx1, idx2]);
           setFlipped([]);
-          setLockBoard(false);
-          const newPairs = pairsCount + 1;
-          setPairsCount(newPairs);
-
-          if (newPairs === EMOJIS.length) finish(true);
+          finish(true);
         }, 300);
       } else {
         // MISMATCH
         setTimeout(() => {
           setMismatched([idx1, idx2]);
-          const newMisses = misses + 1;
-          setMisses(newMisses);
-          if (newMisses >= MAX_MISSES) finish(false);
-          setTimeout(() => {
-            setFlipped([]);
-            setMismatched([]);
-            setLockBoard(false);
-          }, 700);
+          finish(false);
         }, 300);
       }
     }
@@ -102,7 +87,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
 
       <View style={styles.boardCard}>
         <View style={styles.pairsRow}>
-          <Text style={styles.pairsText}>PAIRS {pairsCount}/8   MISSES {misses}/{MAX_MISSES}</Text>
+          <Text style={styles.pairsText}>FIND 1 PAIR</Text>
         </View>
 
         <View style={styles.grid}>
@@ -139,7 +124,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
         </Text>
       ) : (
         <Text style={styles.subtext}>
-          {preview > 0 ? `MEMORIZE THE EMOJIS! ${preview}...` : 'TAP A TILE TO FLIP! FIND ALL PAIRS TO WIN.'}
+          {preview > 0 ? `MEMORIZE THE EMOJIS! ${preview}...` : 'TAP TWO TILES WITH THE SAME EMOJI!'}
         </Text>
       )}
     </View>
