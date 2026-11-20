@@ -16,7 +16,7 @@ const STEPS = [
 const GAMES = [
   { name: 'Counting Circles', body: 'Count the circles and tap the right number.' },
   { name: 'Circle Sorting', body: 'Tap the numbered circles in order. One wrong tap ends the round.' },
-  { name: 'Emoji Match', body: 'Flip the tiles and find all 8 pairs. 5 misses and the round is lost.' },
+  { name: 'Emoji Match', body: 'See all the emojis for 2 seconds, then find the 8 pairs from memory. 5 misses and the round is lost.' },
   { name: 'Quick Math', body: 'Solve a quick sum and tap the right answer.' },
   { name: 'Remember the Pattern', body: 'Watch the colors light up, then tap them in the same order.' },
 ];
