@@ -7,7 +7,7 @@ import { colors, font } from '../theme';
 const STEPS = [
   { title: 'START A RUN', body: 'Press PLAY. You get 120 seconds on the clock.' },
   { title: 'THE TOP BAR', body: 'Your score, the time left and your streak stay at the top of the screen.' },
-  { title: 'SOLVE IT', body: 'A random mini-game appears. Read it fast and pick your answer.' },
+  { title: 'SOLVE IT', body: 'One of the 5 mini-games appears at random. Solve it fast.' },
   { title: 'WIN OR MISS', body: 'Correct: +100 points and +5 seconds.\nWrong: -50 points, -5 seconds and your streak resets.' },
   { title: 'KEEP GOING', body: 'The next mini-game starts right away. Chain wins to build your streak.' },
   { title: 'GAME OVER', body: 'At 0 seconds the run ends and your score is saved. Beat the Top 10!' },
@@ -15,10 +15,10 @@ const STEPS = [
 
 const GAMES = [
   { name: 'Counting Circles', body: 'Count the circles and tap the right number.' },
-  { name: 'Circle Sorting', body: 'Tap the numbered circles in order, smallest or biggest first.' },
-  { name: 'Emoji Match', body: 'Flip the 4x4 tiles and find every pair.' },
-  { name: 'Quick Math', body: 'Solve the equation and tap the right answer.' },
-  { name: 'Remember the Pattern', body: 'Watch the color pattern, then repeat it.' },
+  { name: 'Circle Sorting', body: 'Tap the numbered circles in order. One wrong tap ends the round.' },
+  { name: 'Emoji Match', body: 'Flip the tiles and find all 8 pairs. 5 misses and the round is lost.' },
+  { name: 'Quick Math', body: 'Solve a quick sum and tap the right answer.' },
+  { name: 'Remember the Pattern', body: 'Watch the colors light up, then tap them in the same order.' },
 ];
 
 const FAQ = [

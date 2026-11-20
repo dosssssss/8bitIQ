@@ -3,8 +3,22 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import * as api from '../api';
 import { GameHud, PixelBackground, PixelButton } from '../components';
 import { colors, font } from '../theme';
+import Game1CountingCircles from '../games/Game1CountingCircles';
+import Game2CircleSorting from '../games/Game2CircleSorting';
 import Game3EmojiMatch from '../games/Game3EmojiMatch';
 import Game4QuickMath from '../games/Game4QuickMath';
+import Game5RememberPattern from '../games/Game5RememberPattern';
+
+// The 5 mini-games. Each one reports one result per round with
+// onAnswer(gameId, success), then the next game is picked at random.
+const GAMES = [Game1CountingCircles, Game2CircleSorting, Game3EmojiMatch, Game4QuickMath, Game5RememberPattern];
+
+// A random game index, never the same game twice in a row.
+function pickNextGame(previous) {
+  let next = Math.floor(Math.random() * GAMES.length);
+  if (next === previous) next = (next + 1) % GAMES.length;
+  return next;
+}
 
 // The game loop:
 // start a session -> show a mini-game -> send the result -> repeat -> end at 0s.
@@ -16,6 +30,8 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const endingRef = useRef(false);
+  const [round, setRound] = useState(0); // remounts the mini-game each round
+  const [gameIndex, setGameIndex] = useState(() => pickNextGame(-1));
 
   const finish = useCallback(
     async (sessionId) => {
@@ -73,6 +89,10 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
       setSession((s) => ({ ...s, ...data }));
       setTimeLeft(data.timeRemaining);
       if (data.gameOver) await finish(session.sessionId);
+      else {
+        setGameIndex((prev) => pickNextGame(prev));
+        setRound((r) => r + 1);
+      }
     } catch (e) {
       if (e.data?.gameOver) await finish(session.sessionId);
       else setError(e.message);
@@ -98,6 +118,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
     );
   }
 
+  const CurrentGame = GAMES[gameIndex];
   return (
     <View style={styles.screen}>
       <PixelBackground />
@@ -105,17 +126,13 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
         <Pressable accessibilityRole="button" onPress={onQuit} hitSlop={12}>
           <Text style={styles.exit}>✕ Exit</Text>
         </Pressable>
-        <Text style={styles.games}>GAME {session.gamesCompleted + 1}</Text>
+        <Text style={styles.games}>ROUND {round + 1}</Text>
       </View>
       <GameHud score={session.score} timeLeft={timeLeft} streak={session.streak} />
 
-      {/* Mini-game area: switches between Game 3 and Game 4 */}
+      {/* Mini-game area: a new random game every round */}
       <View style={styles.gameArea}>
-        {session.gamesCompleted % 2 === 0 ? (
-          <Game3EmojiMatch onAnswer={handleResult} disabled={busy} />
-        ) : (
-          <Game4QuickMath onAnswer={handleResult} disabled={busy} />
-        )}
+        <CurrentGame key={round} onAnswer={handleResult} disabled={busy} />
       </View>
 
       <Text style={styles.completed}>Games completed: {session.gamesCompleted}</Text>

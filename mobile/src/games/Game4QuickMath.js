@@ -1,165 +1,72 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { colors, font } from '../theme';
+import GameFrame, { gameStyles, randomInt, shuffle, useFinish } from './GameFrame';
 
-const PROBLEMS = [
-  {
-    expression: '19 + 3( 3 × 3 ) =',
-    options: ['46', '-41', '31', '198'],
-    correct: '46',
-  },
-  {
-    expression: '9 / 2 - 3 + 9(0) =',
-    options: ['-9', '-1', '1.5', '24'],
-    correct: '1.5',
-  },
-];
+// Game 4: Quick Math. Easy for now: one addition or subtraction with
+// numbers up to 10, and the answer is never negative.
+function makeProblem() {
+  let a = randomInt(1, 10);
+  let b = randomInt(1, 10);
+  const plus = Math.random() < 0.5;
+  if (!plus && b > a) [a, b] = [b, a];
+  const answer = plus ? a + b : a - b;
+  const wrong = new Set();
+  while (wrong.size < 3) {
+    const n = answer + randomInt(-3, 3);
+    if (n !== answer && n >= 0) wrong.add(n);
+  }
+  return { expression: `${a} ${plus ? '+' : '-'} ${b} =`, answer, options: shuffle([answer, ...wrong]) };
+}
 
 export default function Game4QuickMath({ onAnswer, disabled = false }) {
-  const [problemIndex, setProblemIndex] = useState(0);
+  const [problem] = useState(makeProblem);
   const [selected, setSelected] = useState(null);
-  const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong'
-  const [lock, setLock] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const finish = useFinish('quickMath', onAnswer, setFeedback);
 
-  const current = PROBLEMS[problemIndex % PROBLEMS.length];
-
-  function handleSelect(option) {
-    if (disabled || lock) return;
-    setLock(true);
-    setSelected(option);
-
-    const isCorrect = option === current.correct;
-    setFeedback(isCorrect ? 'correct' : 'wrong');
-
-    if (onAnswer) {
-      onAnswer('game4', isCorrect);
-    }
-
-    setTimeout(() => {
-      setSelected(null);
-      setFeedback(null);
-      setLock(false);
-      setProblemIndex((idx) => (idx + 1) % PROBLEMS.length);
-    }, 1000);
+  function pick(n) {
+    if (disabled || selected !== null) return;
+    setSelected(n);
+    finish(n === problem.answer);
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleBadge}>
-        <Text style={styles.titleText}>QUICK MATH</Text>
+    <GameFrame title="QUICK MATH" hint="Solve it as fast as you can" feedback={feedback}>
+      <View style={styles.problemBox}>
+        <Text style={gameStyles.prompt}>Can you solve this?</Text>
+        <Text style={styles.equation}>{problem.expression} ?</Text>
       </View>
-
-      <View style={styles.card}>
-        <View style={styles.problemBox}>
-          <Text style={styles.prompt}>Can you solve this?</Text>
-          <Text style={styles.equationText}>{current.expression}</Text>
-          <Text style={styles.questionMark}>?</Text>
-        </View>
-
-        <View style={styles.grid}>
-          {current.options.map((opt) => {
-            const isSelected = selected === opt;
-            const isCorrect = isSelected && feedback === 'correct';
-            const isWrong = isSelected && feedback === 'wrong';
-
-            return (
-              <Pressable
-                key={opt}
-                onPress={() => handleSelect(opt)}
-                style={[
-                  styles.optionBtn,
-                  isCorrect && styles.btnCorrect,
-                  isWrong && styles.btnWrong,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.optionText,
-                    isCorrect && styles.textCorrect,
-                    isWrong && styles.textWrong,
-                  ]}
-                >
-                  {opt}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        {feedback && (
-          <Text
-            style={[
-              styles.feedbackText,
-              feedback === 'correct' ? styles.textCorrect : styles.textWrong,
-            ]}
-          >
-            {feedback === 'correct' ? 'CORRECT!' : 'WRONG!'}
-          </Text>
-        )}
+      <View style={gameStyles.grid}>
+        {problem.options.map((n) => {
+          const isPicked = selected === n;
+          const showRight = selected !== null && n === problem.answer;
+          return (
+            <Pressable
+              key={n}
+              accessibilityRole="button"
+              onPress={() => pick(n)}
+              style={[gameStyles.option, showRight && gameStyles.optionCorrect, isPicked && n !== problem.answer && gameStyles.optionWrong]}
+            >
+              <Text style={gameStyles.optionText}>{n}</Text>
+            </Pressable>
+          );
+        })}
       </View>
-
-      <Text style={styles.subtext}>
-        {feedback === 'wrong' ? 'Better luck next time!' : 'Calculate the math problem'}
-      </Text>
-    </View>
+    </GameFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { width: '100%', alignItems: 'center', marginVertical: 8 },
-  titleBadge: {
-    backgroundColor: '#020a1c',
-    borderWidth: 2,
-    borderColor: '#00f0ff',
-    borderRadius: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 20,
-    marginBottom: 12,
-  },
-  titleText: {
-    color: '#ffffff',
-    fontFamily: 'monospace',
-    fontWeight: 'bold',
-    fontSize: 16,
-    letterSpacing: 1,
-  },
-  card: {
-    width: '94%',
-    backgroundColor: '#030b20',
-    borderWidth: 2.5,
-    borderColor: '#00f0ff',
-    borderRadius: 16,
-    padding: 14,
-    alignItems: 'center',
-  },
   problemBox: {
     width: '100%',
-    backgroundColor: '#02091c',
+    backgroundColor: colors.surfaceDeep,
     borderWidth: 1.5,
-    borderColor: '#00f0ff',
+    borderColor: colors.border,
     borderRadius: 10,
-    padding: 16,
+    padding: 18,
     alignItems: 'center',
     marginBottom: 12,
   },
-  prompt: { color: '#c7d8ee', fontFamily: 'monospace', fontSize: 12, marginBottom: 8 },
-  equationText: { color: '#ffffff', fontFamily: 'monospace', fontSize: 22, fontWeight: 'bold' },
-  questionMark: { color: '#ffffff', fontFamily: 'monospace', fontSize: 24, fontWeight: 'bold', marginTop: 4 },
-  grid: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  optionBtn: {
-    width: '48%',
-    backgroundColor: '#03102c',
-    borderWidth: 2,
-    borderColor: '#00f0ff',
-    borderRadius: 8,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginVertical: 5,
-  },
-  btnCorrect: { borderColor: '#00efa0', backgroundColor: '#02181c' },
-  btnWrong: { borderColor: '#ff1a40', backgroundColor: '#1c050a' },
-  optionText: { color: '#ffffff', fontFamily: 'monospace', fontSize: 18, fontWeight: 'bold' },
-  textCorrect: { color: '#00efa0' },
-  textWrong: { color: '#ff1a40' },
-  feedbackText: { fontFamily: 'monospace', fontSize: 16, fontWeight: 'bold', marginTop: 8 },
-  subtext: { color: '#ffffff', fontFamily: 'monospace', fontSize: 11, marginTop: 10, textAlign: 'center' },
+  equation: { color: colors.text, fontFamily: font.family, fontSize: 34, fontWeight: 'bold' },
 });
