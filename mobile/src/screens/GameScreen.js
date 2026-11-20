@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as api from '../api';
-import { PixelButton } from '../components';
+import { GameHud, PixelBackground, PixelButton } from '../components';
 import { colors, font } from '../theme';
 import Game3EmojiMatch from '../games/Game3EmojiMatch';
 import Game4QuickMath from '../games/Game4QuickMath';
@@ -100,11 +100,14 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.hud}>
-        <Text style={styles.hudText}>SCORE {session.score}</Text>
-        <Text style={[styles.hudText, timeLeft <= 10 && { color: colors.bad }]}>TIME {timeLeft}s</Text>
-        <Text style={styles.hudText}>STREAK {session.streak}</Text>
+      <PixelBackground />
+      <View style={styles.topRow}>
+        <Pressable accessibilityRole="button" onPress={onQuit} hitSlop={12}>
+          <Text style={styles.exit}>✕ Exit</Text>
+        </Pressable>
+        <Text style={styles.games}>GAME {session.gamesCompleted + 1}</Text>
       </View>
+      <GameHud score={session.score} timeLeft={timeLeft} streak={session.streak} />
 
       {/* Mini-game area: switches between Game 3 and Game 4 */}
       <View style={styles.gameArea}>
@@ -115,17 +118,28 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
         )}
       </View>
 
-      <Text style={styles.games}>Games completed: {session.gamesCompleted}</Text>
+      <Text style={styles.completed}>Games completed: {session.gamesCompleted}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, padding: 16, paddingTop: 48 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
-  hud: { flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 2, borderColor: colors.surface, paddingBottom: 12 },
-  hudText: { color: colors.text, fontFamily: font.family, fontWeight: 'bold', fontSize: 16 },
-  gameArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  games: { color: colors.muted, fontFamily: font.family, textAlign: 'center' },
+  screen: { flex: 1, padding: 16, paddingTop: 48, backgroundColor: colors.background },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, backgroundColor: colors.background },
+  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, paddingHorizontal: 3 },
+  exit: { color: colors.accent, fontFamily: font.family, fontWeight: 'bold' },
+  games: { color: colors.text, fontFamily: font.family, fontWeight: 'bold', letterSpacing: 1 },
+  gameArea: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surfaceDeep,
+    borderColor: colors.border,
+    borderWidth: 3,
+    borderRadius: 12,
+    padding: 8,
+    marginBottom: 10,
+  },
+  completed: { color: colors.muted, fontFamily: font.family, textAlign: 'center', marginBottom: 12 },
   error: { color: colors.bad, fontFamily: font.family, textAlign: 'center', marginBottom: 16 },
 });
