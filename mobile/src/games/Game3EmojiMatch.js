@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useFinish } from './GameFrame';
+
+// One round: find all 8 pairs to win. MAX_MISSES wrong pairs loses the round.
+const MAX_MISSES = 5;
 
 const EMOJIS = ['👓', '👑', '😭', '🖤', '💔', '🎸', '👻', '💚'];
 
@@ -19,6 +23,9 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
   const [mismatched, setMismatched] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [pairsCount, setPairsCount] = useState(0);
+  const [misses, setMisses] = useState(0);
+  const [feedback, setFeedback] = useState(null);
+  const finish = useFinish('emojiMatch', onAnswer, setFeedback);
 
   useEffect(() => {
     // 8 pairs (16 tiles total)
@@ -35,7 +42,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
   }, []);
 
   function handleCardPress(index) {
-    if (disabled || lockBoard) return;
+    if (disabled || lockBoard || feedback) return;
     if (flipped.includes(index) || matched.includes(index)) return;
 
     const nextFlipped = [...flipped, index];
@@ -57,17 +64,15 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
           const newPairs = pairsCount + 1;
           setPairsCount(newPairs);
 
-          if (onAnswer) {
-            onAnswer('game3', true);
-          }
+          if (newPairs === EMOJIS.length) finish(true);
         }, 300);
       } else {
         // MISMATCH
         setTimeout(() => {
           setMismatched([idx1, idx2]);
-          if (onAnswer) {
-            onAnswer('game3', false);
-          }
+          const newMisses = misses + 1;
+          setMisses(newMisses);
+          if (newMisses >= MAX_MISSES) finish(false);
           setTimeout(() => {
             setFlipped([]);
             setMismatched([]);
@@ -86,7 +91,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
 
       <View style={styles.boardCard}>
         <View style={styles.pairsRow}>
-          <Text style={styles.pairsText}>PAIRS FOUND {pairsCount}/8</Text>
+          <Text style={styles.pairsText}>PAIRS {pairsCount}/8   MISSES {misses}/{MAX_MISSES}</Text>
         </View>
 
         <View style={styles.grid}>
@@ -117,12 +122,19 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
         </View>
       </View>
 
-      <Text style={styles.subtext}>TAP A TILE TO FLIP! FIND ALL PAIRS TO WIN.</Text>
+      {feedback ? (
+        <Text style={[styles.subtext, styles.feedback, { color: feedback === 'correct' ? '#1EE89A' : '#FF5A6E' }]}>
+          {feedback === 'correct' ? 'CORRECT!' : 'WRONG!'}
+        </Text>
+      ) : (
+        <Text style={styles.subtext}>TAP A TILE TO FLIP! FIND ALL PAIRS TO WIN.</Text>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  feedback: { fontSize: 18, fontWeight: 'bold', letterSpacing: 2 },
   container: {
     width: '100%',
     alignItems: 'center',
