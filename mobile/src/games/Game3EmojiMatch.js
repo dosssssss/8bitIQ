@@ -4,6 +4,9 @@ import { useFinish } from './GameFrame';
 
 // One round: find all 8 pairs to win. MAX_MISSES wrong pairs loses the round.
 const MAX_MISSES = 5;
+// At the start of a round every emoji is shown face up for this long, then
+// the tiles flip face down (same places) and the player matches from memory.
+const PREVIEW_SECONDS = 2;
 
 const EMOJIS = ['👓', '👑', '😭', '🖤', '💔', '🎸', '👻', '💚'];
 
@@ -25,6 +28,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
   const [pairsCount, setPairsCount] = useState(0);
   const [misses, setMisses] = useState(0);
   const [feedback, setFeedback] = useState(null);
+  const [preview, setPreview] = useState(PREVIEW_SECONDS); // seconds left, 0 = playing
   const finish = useFinish('emojiMatch', onAnswer, setFeedback);
 
   useEffect(() => {
@@ -41,8 +45,15 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
     setLockBoard(false);
   }, []);
 
+  // Preview countdown: 2, 1, then hide the emojis.
+  useEffect(() => {
+    if (preview <= 0) return undefined;
+    const timer = setTimeout(() => setPreview((p) => p - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [preview]);
+
   function handleCardPress(index) {
-    if (disabled || lockBoard || feedback) return;
+    if (disabled || lockBoard || feedback || preview > 0) return;
     if (flipped.includes(index) || matched.includes(index)) return;
 
     const nextFlipped = [...flipped, index];
@@ -111,7 +122,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
                   isFlipped && styles.tileFlipped,
                 ]}
               >
-                {isFlipped || isMatched ? (
+                {preview > 0 || isFlipped || isMatched ? (
                   <Text style={styles.emojiText}>{card.emoji}</Text>
                 ) : (
                   <Text style={styles.questionText}>?</Text>
@@ -127,7 +138,9 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
           {feedback === 'correct' ? 'CORRECT!' : 'WRONG!'}
         </Text>
       ) : (
-        <Text style={styles.subtext}>TAP A TILE TO FLIP! FIND ALL PAIRS TO WIN.</Text>
+        <Text style={styles.subtext}>
+          {preview > 0 ? `MEMORIZE THE EMOJIS! ${preview}...` : 'TAP A TILE TO FLIP! FIND ALL PAIRS TO WIN.'}
+        </Text>
       )}
     </View>
   );
