@@ -53,6 +53,16 @@ function getSession(sessionId) {
   return sessions.get(sessionId) || null;
 }
 
+// Removes an active run without saving a result. Expiry checks only visit
+// sessions still in this map, so a cancelled run cannot later reach the board.
+function cancelSession(sessionId) {
+  const session = getSession(sessionId);
+  if (!session) return 'missing';
+  if (session.finished || session.finishing || isOver(session)) return 'finished';
+  sessions.delete(sessionId);
+  return 'cancelled';
+}
+
 function isOver(session, now = Date.now()) {
   return session.finished || getTimeRemaining(session, now) === 0;
 }
@@ -144,6 +154,7 @@ module.exports = {
   isOver,
   createSession,
   getSession,
+  cancelSession,
   getTimeRemaining,
   toPublic,
 };
