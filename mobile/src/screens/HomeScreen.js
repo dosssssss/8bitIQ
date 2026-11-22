@@ -15,7 +15,7 @@ export default function HomeScreen({ player, onPlay, onNavigate }) {
       <Text style={styles.subtitle}>Solve as many mini-games as you can before time runs out.</Text>
       {player ? <Text style={styles.welcome}>Welcome back, {player.username}!</Text> : null}
 
-      <PixelButton label="PLAY" onPress={onPlay} />
+      <PixelButton label="PLAY" onPress={onPlay} sound={null} />
       <PixelButton label="LEADERBOARDS" variant="secondary" onPress={() => onNavigate('leaderboard')} />
       <PixelButton label="HOW TO PLAY" variant="secondary" onPress={() => onNavigate('howToPlay')} />
 

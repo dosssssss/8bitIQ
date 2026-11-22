@@ -28,7 +28,7 @@ export default function GameOverScreen({ result, player, onPlayAgain, onLeaderbo
         {placement ? <Text style={styles.placement}>{placement}</Text> : null}
       </Panel>
 
-      <PixelButton label="PLAY AGAIN" onPress={onPlayAgain} />
+      <PixelButton label="PLAY AGAIN" onPress={onPlayAgain} sound={null} />
       <PixelButton label="LEADERBOARDS" variant="secondary" onPress={onLeaderboard} />
       <PixelButton label="HOME" variant="secondary" onPress={onHome} />
     </Screen>
