@@ -141,7 +141,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, padding: 16, paddingTop: 48, backgroundColor: colors.background },
+  screen: { flex: 1, padding: 16, paddingTop: 112, backgroundColor: colors.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, backgroundColor: colors.background },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, paddingHorizontal: 3 },
   exit: { color: colors.accent, fontFamily: font.family, fontWeight: 'bold' },
