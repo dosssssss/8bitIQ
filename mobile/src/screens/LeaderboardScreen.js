@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import * as api from '../api';
-import { BottomNav, Panel, Screen, ScreenHeader } from '../components';
+import { BottomNav, Panel, PixelButton, Screen, ScreenHeader } from '../components';
 import { colors, font } from '../theme';
 
 // Leaderboards frame from Figma: a podium for the top 3 and the Top 10 list
 // under it. The logged-in player's rows are highlighted in green.
-export default function LeaderboardScreen({ player, onNavigate }) {
+export default function LeaderboardScreen({ player, onPlay, onNavigate }) {
   const [rows, setRows] = useState(null);
   const [error, setError] = useState(null);
 
@@ -49,6 +49,10 @@ export default function LeaderboardScreen({ player, onNavigate }) {
           </View>
         </Panel>
       )}
+
+      <View style={{ alignItems: 'center', marginTop: 16 }}>
+        <PixelButton label="PLAY NOW" onPress={onPlay} />
+      </View>
     </Screen>
   );
 }
