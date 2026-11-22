@@ -6,26 +6,33 @@ import { colors, font } from '../theme';
 const MENU_MUSIC = require('../../assets/audio/adventure-loop.wav');
 const GAME_MUSIC = require('../../assets/audio/gameplay-preview.wav');
 const PLAY_TRANSITION = require('../../assets/audio/play-transition.wav');
+const GAME_END = require('../../assets/audio/game-end.wav');
 
 export default function MusicToggle({ screen = 'home', transitioning = false }) {
   const menuPlayer = useAudioPlayer(MENU_MUSIC);
   const gamePlayer = useAudioPlayer(GAME_MUSIC);
   const transitionPlayer = useAudioPlayer(PLAY_TRANSITION);
+  const endPlayer = useAudioPlayer(GAME_END);
   const menuReady = useAudioPlayerStatus(menuPlayer).isLoaded;
   const gameReady = useAudioPlayerStatus(gamePlayer).isLoaded;
   const transitionReady = useAudioPlayerStatus(transitionPlayer).isLoaded;
+  const endReady = useAudioPlayerStatus(endPlayer).isLoaded;
   const [enabled, setEnabled] = useState(true);
   const [audioModeReady, setAudioModeReady] = useState(false);
   const wasTransitioning = useRef(false);
+  const previousScreen = useRef(screen);
+  const endCuePending = useRef(false);
 
   useEffect(() => {
     menuPlayer.loop = true;
     gamePlayer.loop = true;
     transitionPlayer.loop = false;
+    endPlayer.loop = false;
     menuPlayer.volume = 0.24;
     gamePlayer.volume = 0.24;
     transitionPlayer.volume = 0.3;
-  }, [menuPlayer, gamePlayer, transitionPlayer]);
+    endPlayer.volume = 0.34;
+  }, [menuPlayer, gamePlayer, transitionPlayer, endPlayer]);
 
   useEffect(() => {
     let mounted = true;
@@ -44,6 +51,7 @@ export default function MusicToggle({ screen = 'home', transitioning = false }) 
       wasTransitioning.current = true;
       menuPlayer.pause();
       gamePlayer.pause();
+      endPlayer.pause();
       if (enabled && audioModeReady && transitionReady) {
         transitionPlayer.seekTo(0);
         transitionPlayer.play();
@@ -59,9 +67,10 @@ export default function MusicToggle({ screen = 'home', transitioning = false }) 
       return;
     }
 
-    const activePlayer = screen === 'game' ? gamePlayer : menuPlayer;
-    const inactivePlayer = screen === 'game' ? menuPlayer : gamePlayer;
-    const activeReady = screen === 'game' ? gameReady : menuReady;
+    const inGameExperience = screen === 'game' || screen === 'gameOver';
+    const activePlayer = inGameExperience ? gamePlayer : menuPlayer;
+    const inactivePlayer = inGameExperience ? menuPlayer : gamePlayer;
+    const activeReady = inGameExperience ? gameReady : menuReady;
     const justEnteredGame = screen === 'game' && wasTransitioning.current;
     wasTransitioning.current = false;
     inactivePlayer.pause();
@@ -77,7 +86,17 @@ export default function MusicToggle({ screen = 'home', transitioning = false }) 
       return () => clearTimeout(resumeTimer);
     }
     activePlayer.play();
-  }, [enabled, screen, transitioning, audioModeReady, menuReady, gameReady, transitionReady, menuPlayer, gamePlayer, transitionPlayer]);
+  }, [enabled, screen, transitioning, audioModeReady, menuReady, gameReady, transitionReady, menuPlayer, gamePlayer, transitionPlayer, endPlayer]);
+
+  useEffect(() => {
+    const leavingGame = previousScreen.current === 'game' && (screen === 'home' || screen === 'gameOver');
+    previousScreen.current = screen;
+    if (leavingGame) endCuePending.current = true;
+    if (!endCuePending.current || !audioModeReady || !endReady) return;
+    endCuePending.current = false;
+    endPlayer.seekTo(0);
+    endPlayer.play();
+  }, [screen, audioModeReady, endReady, endPlayer]);
 
   function toggle() {
     setEnabled((current) => !current);

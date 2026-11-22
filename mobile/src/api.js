@@ -50,6 +50,10 @@ export function endGame(sessionId) {
   return request('/api/game/end', { method: 'POST', body: { sessionId } });
 }
 
+export function cancelGame(sessionId) {
+  return request('/api/game/cancel', { method: 'POST', body: { sessionId } });
+}
+
 export function getLeaderboard({ limit = 10, playerId } = {}) {
   const query = new URLSearchParams({ limit: String(limit) });
   if (playerId) query.set('playerId', playerId);
