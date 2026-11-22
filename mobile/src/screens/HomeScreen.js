@@ -17,6 +17,7 @@ export default function HomeScreen({ player, onPlay, onNavigate }) {
 
       <PixelButton label="PLAY" onPress={onPlay} />
       <PixelButton label="LEADERBOARDS" variant="secondary" onPress={() => onNavigate('leaderboard')} />
+      <PixelButton label="MY ACCOUNT" variant="secondary" onPress={() => onNavigate('profile')} />
       <PixelButton label="HOW TO PLAY" variant="secondary" onPress={() => onNavigate('howToPlay')} />
 
       <Text style={styles.invader}>👾</Text>

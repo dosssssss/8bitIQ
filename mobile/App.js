@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { BackHandler, StyleSheet, View } from 'react-native';
 import HomeScreen from './src/screens/HomeScreen';
 import GameScreen from './src/screens/GameScreen';
 import GameOverScreen from './src/screens/GameOverScreen';
@@ -39,6 +39,16 @@ export default function App() {
     setScreen('home');
   }
 
+  // Android back button: every screen goes back to home, home closes the app.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (screen === 'home') return false;
+      setScreen('home');
+      return true;
+    });
+    return () => sub.remove();
+  }, [screen]);
+
   let content;
   if (screen === 'game') {
     content = (
@@ -63,7 +73,7 @@ export default function App() {
       />
     );
   } else if (screen === 'leaderboard') {
-    content = <LeaderboardScreen player={player} onNavigate={navigate} />;
+    content = <LeaderboardScreen player={player} onPlay={play} onNavigate={navigate} />;
   } else if (screen === 'profile') {
     content = <ProfileScreen player={player} onLogin={login} onLogout={logout} onNavigate={navigate} />;
   } else if (screen === 'howToPlay') {
