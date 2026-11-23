@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../theme';
 import GameFrame, { gameStyles, randomInt, shuffle, useFinish } from './GameFrame';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 
 // Game 1: Counting Circles. Count the circles and pick the right number.
 const COLS = 5;
@@ -24,6 +25,7 @@ function makeRound() {
 }
 
 export default function Game1CountingCircles({ onAnswer, disabled = false }) {
+  const playSfx = useSoundEffects();
   const [round] = useState(makeRound);
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState(null);
@@ -31,6 +33,7 @@ export default function Game1CountingCircles({ onAnswer, disabled = false }) {
 
   function pick(n) {
     if (disabled || selected !== null) return;
+    playSfx('click');
     setSelected(n);
     finish(n === round.count);
   }

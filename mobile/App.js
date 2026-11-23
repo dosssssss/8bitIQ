@@ -10,6 +10,7 @@ import HowToPlayScreen from './src/screens/HowToPlayScreen';
 import { colors } from './src/theme';
 import MusicToggle from './src/components/MusicToggle';
 import GameTransitionScreen from './src/components/GameTransitionScreen';
+import { SoundEffectsProvider } from './src/audio/SoundEffectsProvider';
 
 // Simple screen switcher:
 // home -> game -> game over -> leaderboard, plus profile and how to play.
@@ -87,18 +88,20 @@ export default function App() {
   }
 
   return (
-    <View style={styles.app}>
-      {content}
-      <MusicToggle screen={screen} transitioning={transitioning} />
-      {transitioning ? (
-        <GameTransitionScreen
-          onComplete={() => {
-            setTransitioning(false);
-          }}
-        />
-      ) : null}
-      <StatusBar style="light" />
-    </View>
+    <SoundEffectsProvider>
+      <View style={styles.app}>
+        {content}
+        <MusicToggle screen={screen} transitioning={transitioning} />
+        {transitioning ? (
+          <GameTransitionScreen
+            onComplete={() => {
+              setTransitioning(false);
+            }}
+          />
+        ) : null}
+        <StatusBar style="light" />
+      </View>
+    </SoundEffectsProvider>
   );
 }
 

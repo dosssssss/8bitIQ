@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'rea
 import * as api from '../api';
 import { GameHud, PixelBackground, PixelButton } from '../components';
 import { colors, font } from '../theme';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 import Game1CountingCircles from '../games/Game1CountingCircles';
 import Game2CircleSorting from '../games/Game2CircleSorting';
 import Game3EmojiMatch from '../games/Game3EmojiMatch';
@@ -25,6 +26,7 @@ function pickNextGame(previous) {
 // The server owns the real timer. The countdown here is only for display and
 // is corrected from every server reply.
 export default function GameScreen({ playerId, onGameOver, onQuit }) {
+  const playSfx = useSoundEffects();
   const [session, setSession] = useState(null); // { sessionId, score, gamesCompleted, streak }
   const [timeLeft, setTimeLeft] = useState(0);
   const [error, setError] = useState(null);
@@ -76,6 +78,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
   }
 
   function requestExit() {
+    playSfx('danger');
     if (!session) {
       onQuit();
       return;
@@ -139,7 +142,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
     return (
       <View style={styles.center}>
         <Text style={styles.error}>{error}</Text>
-        <PixelButton label="BACK" onPress={requestExit} />
+        <PixelButton label="BACK" onPress={requestExit} sound={null} />
       </View>
     );
   }

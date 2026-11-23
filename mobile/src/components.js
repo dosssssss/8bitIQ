@@ -1,14 +1,19 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { colors, font, text } from './theme';
+import { useSoundEffects } from './audio/SoundEffectsProvider';
 
 // Mint button from Figma (NEXT >, PLAY). Use variant="secondary" for the
 // navy button with a cyan outline (tabs, BACK, less important actions).
-export function PixelButton({ label, onPress, variant = 'primary', color, disabled = false, small = false }) {
+export function PixelButton({ label, onPress, variant = 'primary', color, disabled = false, small = false, sound = 'click' }) {
+  const playSfx = useSoundEffects();
   const primary = variant === 'primary';
   return (
     <Pressable
       accessibilityRole="button"
-      onPress={onPress}
+      onPress={() => {
+        if (sound) playSfx(sound);
+        onPress?.();
+      }}
       disabled={disabled}
       style={({ pressed }) => [
         styles.button,
@@ -105,6 +110,7 @@ const TABS = [
 ];
 
 export function BottomNav({ current, onNavigate }) {
+  const playSfx = useSoundEffects();
   return (
     <View style={styles.nav}>
       {TABS.map((tab) => {
@@ -114,7 +120,10 @@ export function BottomNav({ current, onNavigate }) {
             key={tab.id}
             accessibilityRole="button"
             accessibilityState={{ selected: active }}
-            onPress={() => onNavigate(tab.id)}
+            onPress={() => {
+              playSfx('switch');
+              onNavigate(tab.id);
+            }}
             style={styles.navItem}
           >
             <Text style={[styles.navIcon, active && { color: colors.accent }]}>{tab.icon}</Text>

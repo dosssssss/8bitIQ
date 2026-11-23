@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, font } from '../theme';
 import GameFrame, { gameStyles, randomInt, shuffle, useFinish } from './GameFrame';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 
 // Game 2: Circle Sorting. Tap the numbered circles from smallest to biggest
 // (or biggest to smallest). One wrong tap ends the round.
@@ -14,6 +15,7 @@ function makeRound() {
 }
 
 export default function Game2CircleSorting({ onAnswer, disabled = false }) {
+  const playSfx = useSoundEffects();
   const [round] = useState(makeRound);
   const [tapped, setTapped] = useState([]);
   const [wrongTap, setWrongTap] = useState(null);
@@ -22,6 +24,7 @@ export default function Game2CircleSorting({ onAnswer, disabled = false }) {
 
   function tap(n) {
     if (disabled || feedback || tapped.includes(n)) return;
+    playSfx('click');
     if (n !== round.order[tapped.length]) {
       setWrongTap(n);
       finish(false);

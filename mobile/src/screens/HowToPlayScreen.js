@@ -64,7 +64,7 @@ export default function HowToPlayScreen({ onPlay, onNavigate }) {
       </Panel>
 
       <View style={{ alignItems: 'center', marginTop: 20 }}>
-        <PixelButton label="PLAY NOW" onPress={onPlay} />
+        <PixelButton label="PLAY NOW" onPress={onPlay} sound={null} />
       </View>
     </Screen>
   );

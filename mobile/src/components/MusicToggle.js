@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { colors, font } from '../theme';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 
 const MENU_MUSIC = require('../../assets/audio/adventure-loop.wav');
 const GAME_MUSIC = require('../../assets/audio/gameplay-preview.wav');
@@ -9,6 +10,7 @@ const PLAY_TRANSITION = require('../../assets/audio/play-transition.wav');
 const GAME_END = require('../../assets/audio/game-end.wav');
 
 export default function MusicToggle({ screen = 'home', transitioning = false }) {
+  const playSfx = useSoundEffects();
   const menuPlayer = useAudioPlayer(MENU_MUSIC);
   const gamePlayer = useAudioPlayer(GAME_MUSIC);
   const transitionPlayer = useAudioPlayer(PLAY_TRANSITION);
@@ -99,6 +101,7 @@ export default function MusicToggle({ screen = 'home', transitioning = false }) 
   }, [screen, audioModeReady, endReady, endPlayer]);
 
   function toggle() {
+    playSfx('toggle');
     setEnabled((current) => !current);
   }
 
