@@ -8,6 +8,9 @@ import LeaderboardScreen from './src/screens/LeaderboardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import HowToPlayScreen from './src/screens/HowToPlayScreen';
 import { colors } from './src/theme';
+import MusicToggle from './src/components/MusicToggle';
+import GameTransitionScreen from './src/components/GameTransitionScreen';
+import { SoundEffectsProvider } from './src/audio/SoundEffectsProvider';
 
 // Simple screen switcher:
 // home -> game -> game over -> leaderboard, plus profile and how to play.
@@ -19,10 +22,12 @@ export default function App() {
   // { id, username } after login. The login/register screens (card 8B-1)
   // and the profile screen both set it with login().
   const [player, setPlayer] = useState(null);
+  const [transitioning, setTransitioning] = useState(false);
 
   function play() {
     setGameKey((k) => k + 1);
     setScreen('game');
+    setTransitioning(true);
   }
 
   function navigate(next) {
@@ -83,10 +88,20 @@ export default function App() {
   }
 
   return (
-    <View style={styles.app}>
-      {content}
-      <StatusBar style="light" />
-    </View>
+    <SoundEffectsProvider>
+      <View style={styles.app}>
+        {content}
+        <MusicToggle screen={screen} transitioning={transitioning} />
+        {transitioning ? (
+          <GameTransitionScreen
+            onComplete={() => {
+              setTransitioning(false);
+            }}
+          />
+        ) : null}
+        <StatusBar style="light" />
+      </View>
+    </SoundEffectsProvider>
   );
 }
 

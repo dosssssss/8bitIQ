@@ -70,8 +70,23 @@ async function endGame(req, res) {
   });
 }
 
+// POST /api/game/cancel
+// Abandons an active run without saving it to the leaderboard.
+function cancelGame(req, res) {
+  const input = validate.body(req);
+  const sessionId = validate.requiredString(input.sessionId, 'sessionId');
+  const outcome = sessionService.cancelSession(sessionId);
+  if (outcome === 'finished') {
+    throw conflict('Game has already ended', { gameOver: true });
+  }
+
+  // Treat a repeated request as success so a lost response is safe to retry.
+  res.json({ success: true, cancelled: outcome === 'cancelled', sessionId });
+}
+
 module.exports = {
   startGame: asyncHandler(startGame),
   submitResult: asyncHandler(submitResult),
   endGame: asyncHandler(endGame),
+  cancelGame: asyncHandler(cancelGame),
 };

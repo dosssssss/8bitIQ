@@ -41,3 +41,15 @@ create index results_player_idx
 alter table public.players     enable row level security;
 alter table public.auth_tokens enable row level security;
 alter table public.results     enable row level security;
+
+-- Mini-game catalog, read by GET /api/games (backend/services/gameCatalogService.js).
+-- Safe to run again: it only creates the table if it is missing.
+create table if not exists public.games (
+  id          text primary key check (id ~ '^[A-Za-z0-9_]{1,50}$'),
+  title       text not null,
+  description text not null default '',
+  sort_order  integer not null default 0,
+  config      jsonb not null default '{}'::jsonb,
+  enabled     boolean not null default true
+);
+alter table public.games enable row level security;

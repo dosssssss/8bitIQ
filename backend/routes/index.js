@@ -7,7 +7,7 @@ router.get('/health', (req, res) => {
   res.json({ success: true, message: 'ok' });
 });
 
-router.use('/game', require('./game')); // POST /api/game/start, /result, /end
+router.use('/game', require('./game')); // POST /api/game/start, /result, /end, /cancel
 router.use('/leaderboard', require('./leaderboard')); // GET /api/leaderboard
 router.use('/games', require('./games')); // GET /api/games, /api/games/:id (from Supabase)
 

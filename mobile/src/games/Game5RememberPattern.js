@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, font } from '../theme';
 import GameFrame, { randomInt, useFinish } from './GameFrame';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 
 // Game 5: Remember the Pattern. Watch the pads light up, then tap them in
 // the same order. One wrong tap ends the round.
@@ -20,6 +21,7 @@ function makeSequence() {
 }
 
 export default function Game5RememberPattern({ onAnswer, disabled = false }) {
+  const playSfx = useSoundEffects();
   const [sequence] = useState(makeSequence);
   const [lit, setLit] = useState(null); // pad currently lit
   const [watching, setWatching] = useState(true);
@@ -41,6 +43,7 @@ export default function Game5RememberPattern({ onAnswer, disabled = false }) {
 
   function tap(pad) {
     if (disabled || watching || feedback) return;
+    playSfx('click');
     setLit(pad);
     setTimeout(() => setLit((p) => (p === pad ? null : p)), 200);
     if (pad !== sequence[step]) {

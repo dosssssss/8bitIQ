@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useFinish } from './GameFrame';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 
 // One round = one try: flip two tiles. A matching pair wins the round, a
 // wrong pair loses it, and either way the next mini-game starts.
@@ -20,6 +21,7 @@ function shuffle(array) {
 }
 
 export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
+  const playSfx = useSoundEffects();
   const [deck, setDeck] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
@@ -27,7 +29,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
   const [lockBoard, setLockBoard] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [preview, setPreview] = useState(PREVIEW_SECONDS); // seconds left, 0 = playing
-  const finish = useFinish('emojiMatch', onAnswer, setFeedback);
+  const finish = useFinish('emojiMatch', onAnswer, setFeedback, { success: 'match', failure: 'miss' });
 
   useEffect(() => {
     // 8 pairs (16 tiles total)
@@ -53,6 +55,7 @@ export default function Game3EmojiMatch({ onAnswer, disabled = false }) {
     if (disabled || lockBoard || feedback || preview > 0) return;
     if (flipped.includes(index) || matched.includes(index)) return;
 
+    playSfx('flip');
     const nextFlipped = [...flipped, index];
     setFlipped(nextFlipped);
 

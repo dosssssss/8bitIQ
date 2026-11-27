@@ -57,11 +57,11 @@
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Language</span>
           </div>
-          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+          <div class="menu-item-row" data-nav="view-account" role="button" tabindex="0">
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Account Center</span>
           </div>
-          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+          <div class="menu-item-row" data-nav="view-leaderboard" role="button" tabindex="0">
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Leaderboards</span>
           </div>
@@ -145,11 +145,11 @@
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Language</span>
           </div>
-          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+          <div class="menu-item-row" data-nav="view-account" role="button" tabindex="0">
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Account Center</span>
           </div>
-          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+          <div class="menu-item-row" data-nav="view-leaderboard" role="button" tabindex="0">
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Leaderboards</span>
           </div>
@@ -250,11 +250,11 @@
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Language</span>
           </div>
-          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+          <div class="menu-item-row" data-nav="view-account" role="button" tabindex="0">
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Account Center</span>
           </div>
-          <div class="menu-item-row disabled" aria-disabled="true" title="Unavailable">
+          <div class="menu-item-row" data-nav="view-leaderboard" role="button" tabindex="0">
             <span class="menu-arrow">&gt;</span>
             <span class="menu-label">Leaderboards</span>
           </div>
@@ -512,6 +512,90 @@
         </div>
       </section>
 
+      <!-- =======================================================
+           VIEW 8: Leaderboards (Top 10 from /api/leaderboard)
+           ======================================================= -->
+      <section id="view-leaderboard" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <button class="btn-back-square btn-back" title="Back" aria-label="Go back">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="title-group">
+              <h1 class="screen-title">Leaderboards</h1>
+              <p class="screen-subtitle">Top 10 runs</p>
+            </div>
+          </div>
+        </header>
+        <div class="header-divider"></div>
+
+        <div class="cyan-card lb-card">
+          <div class="lb-head">
+            <span class="lb-col-rank">#</span>
+            <span class="lb-col-name">PLAYER</span>
+            <span class="lb-col-games">GAMES</span>
+            <span class="lb-col-score">SCORE</span>
+          </div>
+          <div id="leaderboard-list" aria-live="polite">
+            <p class="lb-message">Loading...</p>
+          </div>
+        </div>
+        <button class="btn-modal-action" id="btn-refresh-leaderboard" type="button">REFRESH</button>
+      </section>
+
+      <!-- =======================================================
+           VIEW 9: Account Center (log in / register / log out)
+           ======================================================= -->
+      <section id="view-account" class="view-panel">
+        <header class="screen-header">
+          <div class="header-left">
+            <button class="btn-back-square btn-back" title="Back" aria-label="Go back">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="title-group">
+              <h1 class="screen-title">Account</h1>
+              <p class="screen-subtitle">Log in to save your scores</p>
+            </div>
+          </div>
+        </header>
+        <div class="header-divider"></div>
+
+        <!-- Logged out -->
+        <div id="account-logged-out">
+          <div class="cyan-card">
+            <div class="modal-body">
+              <label for="input-account-user">Username</label>
+              <input type="text" id="input-account-user" class="modal-input" placeholder="PlayerOne" maxlength="20" autocomplete="username">
+              <label for="input-account-pass">Password</label>
+              <input type="password" id="input-account-pass" class="modal-input" placeholder="At least 8 characters" maxlength="72" autocomplete="current-password">
+            </div>
+            <p class="lb-message lb-error" id="account-error" role="alert"></p>
+          </div>
+          <button class="btn-modal-action" id="btn-account-login" type="button">LOG IN</button>
+          <button class="btn-modal-action account-secondary" id="btn-account-register" type="button">CREATE ACCOUNT</button>
+        </div>
+
+        <!-- Logged in -->
+        <div id="account-logged-in" style="display: none;">
+          <h2 class="section-tag">Player</h2>
+          <div class="cyan-card table-card">
+            <div class="table-row">
+              <span class="table-col-label">Username</span>
+              <span class="table-col-val" id="account-name">-</span>
+            </div>
+            <div class="table-row">
+              <span class="table-col-label">Best run (games)</span>
+              <span class="table-col-val" id="account-best-games">-</span>
+            </div>
+            <div class="table-row">
+              <span class="table-col-label">Best run (score)</span>
+              <span class="table-col-val" id="account-best-score">-</span>
+            </div>
+          </div>
+          <button class="btn-modal-action danger" id="btn-account-logout" type="button">LOG OUT</button>
+        </div>
+      </section>
+
     </div>
 
     <!-- =======================================================
@@ -535,16 +619,16 @@
           <span class="nav-label">Home</span>
         </a>
 
-        <!-- Leaderboards (Unclickable / Disabled as requested) -->
-        <div class="nav-item disabled" aria-disabled="true" title="Disabled">
+        <!-- Leaderboards -->
+        <div class="nav-item" id="nav-leaderboard" role="button" tabindex="0">
           <div class="nav-icon">
             <svg viewBox="0 0 24 24"><rect x="3" y="13" width="5" height="8" rx="1"/><rect x="9.5" y="7" width="5" height="14" rx="1"/><rect x="16" y="10" width="5" height="11" rx="1"/></svg>
           </div>
           <span class="nav-label">Leaderboards</span>
         </div>
 
-        <!-- Account (Unclickable / Disabled as requested) -->
-        <div class="nav-item disabled" aria-disabled="true" title="Disabled">
+        <!-- Account -->
+        <div class="nav-item" id="nav-account" role="button" tabindex="0">
           <div class="nav-icon">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21v-2a5 5 0 0 1 10 0v2"/></svg>
           </div>

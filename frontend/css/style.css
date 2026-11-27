@@ -1032,3 +1032,81 @@ body {
     border: none;
   }
 }
+
+/* ============================================================
+   Leaderboards view
+   ============================================================ */
+.lb-card {
+  padding: 12px 14px;
+}
+
+.lb-head,
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.lb-head {
+  color: var(--mint-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 1px dashed rgba(0, 240, 255, 0.35);
+}
+
+.lb-row {
+  color: var(--text-white);
+  font-size: 13px;
+  border-bottom: 1px dashed rgba(0, 240, 255, 0.2);
+}
+
+.lb-row:last-child {
+  border-bottom: none;
+}
+
+.lb-col-rank { width: 34px; flex: none; }
+.lb-col-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-col-games { width: 54px; flex: none; text-align: right; }
+.lb-col-score { width: 58px; flex: none; text-align: right; font-weight: 700; }
+
+.lb-row .lb-col-rank { color: var(--mint-primary); font-weight: 700; }
+.lb-row.lb-top .lb-col-name,
+.lb-row.lb-top .lb-col-score { color: var(--mint-primary); }
+.lb-row.lb-guest .lb-col-name { color: var(--text-muted); font-style: italic; }
+
+.lb-message {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 18px 0;
+  margin: 0;
+}
+
+.lb-message.lb-error { color: var(--pink-accent); }
+
+#btn-refresh-leaderboard {
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* ============================================================
+   Account Center view
+   ============================================================ */
+#view-account .btn-modal-action {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#view-account .btn-modal-action.account-secondary {
+  background: transparent;
+  color: var(--mint-primary);
+  border: 2px solid var(--mint-primary);
+  box-shadow: none;
+}
+
+#view-account .lb-message {
+  padding: 8px 0 0;
+  min-height: 1em;
+}

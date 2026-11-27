@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, font } from '../theme';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 
 // Shared layout for every mini-game, from the Figma game frames:
 // a title badge, a navy card with a cyan outline, and a hint line.
@@ -27,13 +28,16 @@ export default function GameFrame({ title, hint, feedback, children }) {
 export const FEEDBACK_MS = 800;
 
 // Shows the feedback, then reports the result once. Returns finish(success).
-export function useFinish(gameId, onAnswer, setFeedback) {
+export function useFinish(gameId, onAnswer, setFeedback, sounds = { success: 'correct', failure: 'wrong' }) {
+  const playSfx = useSoundEffects();
   const done = useRef(false);
   const timer = useRef(null);
   useEffect(() => () => clearTimeout(timer.current), []);
   return function finish(success) {
     if (done.current) return;
     done.current = true;
+    const sound = success ? sounds.success : sounds.failure;
+    if (sound) playSfx(sound);
     setFeedback(success ? 'correct' : 'wrong');
     timer.current = setTimeout(() => onAnswer && onAnswer(gameId, success), FEEDBACK_MS);
   };

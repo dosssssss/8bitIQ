@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as api from '../api';
 import { GameHud, PixelBackground, PixelButton } from '../components';
 import { colors, font } from '../theme';
+import { useSoundEffects } from '../audio/SoundEffectsProvider';
 import Game1CountingCircles from '../games/Game1CountingCircles';
 import Game2CircleSorting from '../games/Game2CircleSorting';
 import Game3EmojiMatch from '../games/Game3EmojiMatch';
@@ -25,6 +26,7 @@ function pickNextGame(previous) {
 // The server owns the real timer. The countdown here is only for display and
 // is corrected from every server reply.
 export default function GameScreen({ playerId, onGameOver, onQuit }) {
+  const playSfx = useSoundEffects();
   const [session, setSession] = useState(null); // { sessionId, score, gamesCompleted, streak }
   const [timeLeft, setTimeLeft] = useState(0);
   const [error, setError] = useState(null);
@@ -52,6 +54,41 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
     },
     [onGameOver],
   );
+
+  async function cancelRun() {
+    if (!session) {
+      onQuit();
+      return;
+    }
+    if (endingRef.current || busy) return;
+    endingRef.current = true;
+    setBusy(true);
+    try {
+      await api.cancelGame(session.sessionId);
+      onQuit();
+    } catch (e) {
+      endingRef.current = false;
+      setBusy(false);
+      if (e.status === 409 && e.data?.gameOver) {
+        await finish(session.sessionId);
+      } else {
+        setError(e.message);
+      }
+    }
+  }
+
+  function requestExit() {
+    playSfx('danger');
+    if (!session) {
+      onQuit();
+      return;
+    }
+    if (busy) return;
+    Alert.alert('END THIS RUN?', 'Leaving now will discard this run. It will not be saved or count on the leaderboard.', [
+      { text: 'KEEP PLAYING', style: 'cancel' },
+      { text: 'LEAVE GAME', style: 'destructive', onPress: cancelRun },
+    ]);
+  }
 
   // Start a new session when the screen opens.
   useEffect(() => {
@@ -82,7 +119,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
 
   // Called by a mini-game when the player answers.
   async function handleResult(game, success) {
-    if (!session || busy) return;
+    if (!session || busy || endingRef.current) return;
     setBusy(true);
     try {
       const data = await api.sendResult(session.sessionId, game, success);
@@ -105,7 +142,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
     return (
       <View style={styles.center}>
         <Text style={styles.error}>{error}</Text>
-        <PixelButton label="BACK" onPress={onQuit} />
+        <PixelButton label="BACK" onPress={requestExit} sound={null} />
       </View>
     );
   }
@@ -123,7 +160,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
     <View style={styles.screen}>
       <PixelBackground />
       <View style={styles.topRow}>
-        <Pressable accessibilityRole="button" onPress={onQuit} hitSlop={12}>
+        <Pressable accessibilityRole="button" onPress={requestExit} hitSlop={12} disabled={busy}>
           <Text style={styles.exit}>✕ Exit</Text>
         </Pressable>
         <Text style={styles.games}>ROUND {round + 1}</Text>
@@ -141,7 +178,7 @@ export default function GameScreen({ playerId, onGameOver, onQuit }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, padding: 16, paddingTop: 48, backgroundColor: colors.background },
+  screen: { flex: 1, padding: 16, paddingTop: 112, backgroundColor: colors.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, backgroundColor: colors.background },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, paddingHorizontal: 3 },
   exit: { color: colors.accent, fontFamily: font.family, fontWeight: 'bold' },
