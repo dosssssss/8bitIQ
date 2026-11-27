@@ -91,7 +91,15 @@ export function Screen({ children, scroll = false, footer = null, contentStyle }
     <View style={styles.screen}>
       <PixelBackground />
       {scroll ? (
-        <ScrollView contentContainerStyle={[styles.content, contentStyle]}>{children}</ScrollView>
+        <ScrollView
+          contentContainerStyle={[styles.content, contentStyle]}
+          // Without this, the first tap on a button while the keyboard is open
+          // only closes the keyboard and the button never fires.
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets
+        >
+          {children}
+        </ScrollView>
       ) : (
         <View style={[styles.content, { flex: 1 }, contentStyle]}>{children}</View>
       )}
@@ -138,7 +146,8 @@ export function BottomNav({ current, onNavigate }) {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   content: { padding: 20, paddingTop: 56 },
-  header: { marginBottom: 16 },
+  // paddingRight keeps the title clear of the floating music button (56px wide, top-right).
+  header: { marginBottom: 16, paddingRight: 72 },
   button: {
     paddingVertical: 14,
     paddingHorizontal: 24,
