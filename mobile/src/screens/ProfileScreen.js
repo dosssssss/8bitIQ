@@ -86,6 +86,11 @@ function SignInPanel({ onLogin }) {
   const [error, setError] = useState(null);
 
   async function submit(action) {
+    if (busy) return;
+    if (!username.trim() || !password) {
+      setError('Enter a username and password.');
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
